@@ -7,6 +7,7 @@ import interactionCreate from './hooks/interactionCreate'
 import ready from './hooks/ready'
 import { Headhunter } from 'src/games/headhunter'
 import { StringUtils } from 'src/util/stringUtils'
+import { EventMessage } from 'src/classes/eventMessage'
 
 dotenv.config({ path: path.resolve('./config.env') })
 const token = process.env.DSCRD_BOT_TK
@@ -34,10 +35,16 @@ var gameCommand = headhunter.getGameCommand();
 client.on('messageCreate', message => {
   if (message.author.id === client.user?.id) return
   if (message.channelId === gameChannelId) {
-    // validate message starts with gameCommand
+    console.log("Message received in game channel from " + message.author.username + ": " + message.content)
     if (StringUtils.startsWith(message.content, gameCommand)) {
-      // run game
-      // headhunter.play(message);
+      console.log("Message matched game command check")
+      var eventMessage = new EventMessage(message.channelId, message.author.id, message.content);
+      var response = headhunter.play(eventMessage);
+      if(response) message.react('✅');
+      console.log("Message processed by game")
+    } else {
+      message.react('❌');
+      console.log("Message did not match game command check")
     }
   }
 })

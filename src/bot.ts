@@ -3,7 +3,6 @@ import { MessageSender } from 'src/util/messageSender'
 import { BufferedOutput } from 'src/util/bufferedOutput'
 import * as dotenv from 'dotenv'
 import path from 'path'
-import interactionCreate from './hooks/interactionCreate'
 import ready from './hooks/ready'
 import { Headhunter } from 'src/games/headhunter'
 import { StringUtils } from 'src/util/stringUtils'
@@ -19,7 +18,6 @@ const client = new Client({
 })
 
 ready(client)
-interactionCreate(client)
 
 client.login(token)
 
@@ -32,6 +30,7 @@ var gameCommand = headhunter.getGameCommand();
   // pass message sender - game creates own queue system
   // db connection
 // listen here for new input and run the game for the user
+console.log("Listening for messages in game channel " + gameChannelId + " with command " + gameCommand)
 client.on('messageCreate', message => {
   if (message.author.id === client.user?.id) return
   if (message.channelId === gameChannelId) {

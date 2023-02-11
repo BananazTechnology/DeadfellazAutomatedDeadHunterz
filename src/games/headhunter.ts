@@ -22,6 +22,7 @@ export class Headhunter {
       return;
     }
     this.db = new Database(env.DB_HOST, parseInt(env.DB_PORT), env.DB_USER, env.DB_PWD, parseInt(env.DB_CONN_SIZE));
+    // if(!this.db.checkIfDatabaseExists(env.DB_NAME)) this.db.createDatabase(env.DB_NAME);
     console.log(this.db.checkIfDatabaseExists(env.DB_NAME));
     // load game config from db
     // load game channel id

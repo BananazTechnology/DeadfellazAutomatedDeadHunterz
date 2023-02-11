@@ -5,7 +5,6 @@ export class Database {
   private db : Pool;
 
   public constructor(host : string, port: number, username : string, password : string, connectionSize : number) {
-    console.log("Creating new database connection...");
     this.db = createPool({
       connectionLimit: connectionSize,
       host: host,
@@ -16,17 +15,17 @@ export class Database {
   }
 
 
-  public createDatabase (databaseName : string) : void {
-    this.db.query(`CREATE DATABASE ${databaseName}`, (err, result) => {
-      if (err) {
-        console.log(err)
-      }
-    })
+  public createDatabase (databaseName : string) : boolean {
+    // var query = this.db.query(`CREATE DATABASE ${databaseName}`);
+    return false;
   }
 
   public checkIfDatabaseExists (databaseName : string) : boolean {
-    var a = this.db.query(`SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '${databaseName}'`);
-    a.on('result', (row : RowDataPacket) => {
+    var query = this.db.query(`SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '${databaseName}'`);
+    query.on('error', (err : Error) => {
+      console.log(err)
+    })
+    query.on('result', (row : RowDataPacket) => {
       if (row.length == 0) {
         return false
       } else {

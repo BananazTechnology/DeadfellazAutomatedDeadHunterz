@@ -1,19 +1,28 @@
 import { EventMessage } from 'src/classes/eventMessage';
+import { Database } from 'src/database/database';
 import { BufferedOutput } from 'src/util/bufferedOutput';
 import { MessageSender } from 'src/util/messageSender';
 
 export class Headhunter {
 
+  private db!: Database;
   private output : BufferedOutput;
-  private gameChannelId : string;
-  private gameName : string;
-  private gameCommand : string;
+  private gameChannelId!: string;
+  private gameName!: string;
+  private gameCommand!: string;
 
-  public constructor (sender : MessageSender) {
+
+  public constructor (sender : MessageSender, env : NodeJS.ProcessEnv) {
     var output = new BufferedOutput(sender);
     this.output = output;
     console.log(`Starting new Headhunter game...`);
-    
+    if(env.DB_HOST == undefined || env.DB_PORT == undefined || env.DB_NAME == undefined ||
+      env.DB_USER == undefined || env.DB_PASS == undefined || env.DB_CONN_SIZE == undefined) {
+      console.log("Missing database connection information. Please check the env.");
+      return;
+    }
+    this.db = new Database(env.DB_HOST, parseInt(env.DB_PORT), env.DB_USER, env.DB_PASS, parseInt(env.DB_CONN_SIZE));
+    console.log(this.db.checkIfDatabaseExists(env.DB_NAME));
     // load game config from db
     // load game channel id
     // load game name

@@ -24,17 +24,15 @@ export class Database {
   }
 
   public checkIfDatabaseExists (databaseName : string) : boolean {
-    this.db.query(`SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '${databaseName}'`, (err, result) => {
-      if (err) {
-        console.log(err)
+    var a = this.db.query(`SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '${databaseName}'`)
+    a.on('result', (row : RowDataPacket) => {
+      if (row.length == 0) {
         return false
+      } else {
+        return true
       }
-      if(result) {
-        const rows = <RowDataPacket[]> result;
-        if(rows.length > 0) return true
-      }
-      return false
     })
+    return false
   }
 
   

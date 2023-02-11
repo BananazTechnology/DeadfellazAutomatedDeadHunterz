@@ -8,7 +8,7 @@ import { Headhunter } from 'src/games/headhunter'
 import { StringUtils } from 'src/util/stringUtils'
 import { EventMessage } from 'src/classes/eventMessage'
 
-dotenv.config({ path: path.resolve('./config.env') })
+dotenv.config({ path: path.resolve('./.env') })
 const token = process.env.DSCRD_BOT_TK
 
 console.log('Bot is starting...')
@@ -24,7 +24,7 @@ client.login(token)
 // Start discord message sender
 var messageSender = new MessageSender(client);
 // Start game
-var headhunter = new Headhunter(messageSender);
+var headhunter = new Headhunter(messageSender, process.env);
 var gameChannelId = headhunter.getGameChannelId();
 var gameCommand = headhunter.getGameCommand();
   // pass message sender - game creates own queue system

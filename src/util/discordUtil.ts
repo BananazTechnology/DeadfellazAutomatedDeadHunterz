@@ -1,4 +1,4 @@
-import { BaseCommandInteraction, MessageEmbed } from 'discord.js'
+import { BaseCommandInteraction, Client, MessageEmbed, MessageOptions, MessagePayload, TextChannel } from 'discord.js'
 
 export class DiscordUtil {
   // will keep adding fields to an embed. When out of room, adds another embed to the arry of embeds
@@ -42,5 +42,13 @@ export class DiscordUtil {
     } catch (err) {
       return undefined
     }
+  }
+
+  static async sendToOne(client: Client, id: string, msg: string | MessagePayload | MessageOptions) {
+    if (!id) return
+    const channel = await client.channels.fetch(id)
+    // Using a type guard to narrow down the correct type
+    if (!((channel): channel is TextChannel => channel?.type === 'GUILD_TEXT')(channel)) return
+    channel.send(msg)
   }
 }

@@ -1,12 +1,11 @@
 import { Client, Message } from 'discord.js'
-import { MessageSender } from 'src/util/messageSender'
-import { BufferedOutput } from 'src/util/bufferedOutput'
+import { MessageSender } from './util/messageSender'
 import * as dotenv from 'dotenv'
 import path from 'path'
 import ready from './hooks/ready'
-import { Headhunter } from 'src/games/headhunter'
-import { StringUtils } from 'src/util/stringUtils'
-import { EventMessage } from 'src/classes/eventMessage'
+import { Headhunter } from './games/headhunter'
+import { StringUtils } from './util/stringUtils'
+import { EventMessage } from './classes/eventMessage'
 
 dotenv.config({ path: path.resolve('./.env') })
 const token = process.env.DSCRD_BOT_TK

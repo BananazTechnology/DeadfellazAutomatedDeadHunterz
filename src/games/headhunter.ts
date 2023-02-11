@@ -1,7 +1,7 @@
-import { EventMessage } from 'src/classes/eventMessage';
-import { Database } from 'src/database/database';
-import { BufferedOutput } from 'src/util/bufferedOutput';
-import { MessageSender } from 'src/util/messageSender';
+import { EventMessage } from '../classes/eventMessage';
+import { Database } from '../database/database';
+import { BufferedOutput } from '../util/bufferedOutput';
+import { MessageSender } from '../util/messageSender';
 
 export class Headhunter {
 

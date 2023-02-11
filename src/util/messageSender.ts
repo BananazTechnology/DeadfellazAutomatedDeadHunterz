@@ -1,6 +1,6 @@
 import { Client } from 'discord.js'
 import { EventMessage } from 'src/classes/eventMessage';
-import { DiscordUtil } from 'src/util/discordUtil';
+import { DiscordUtil } from './discordUtil';
 
 export class MessageSender {
   // User attributes. Should always be private as updating information will need to be reflected in the db

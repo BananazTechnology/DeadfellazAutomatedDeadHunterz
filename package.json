@@ -1,7 +1,7 @@
 {
-  "name": "fishing-game",
+  "name": "deadfellaz-headhunters-v2",
   "version": "1.0.0",
-  "description": "Deadfellaz Reaction Bot",
+  "description": "Deadfellaz Headhunter game",
   "main": "src/bot.ts",
   "scripts": {
     "start": "ts-node src/bot.ts",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/BananazTechnology/fishing-game.git"
+    "url": "git+https://github.com/BananazTechnology/DeadfellazAutomatedDeadHunterz.git"
   },
   "author": "Bananaz Tech",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/BananazTechnology/fishing-game/issues"
+    "url": "https://github.com/BananazTechnology/DeadfellazAutomatedDeadHunterz/issues"
   },
-  "homepage": "https://github.com/BananazTechnology/fishing-game#readme",
+  "homepage": "https://github.com/BananazTechnology/DeadfellazAutomatedDeadHunterz#readme",
   "dependencies": {
     "axios": "^0.26.1",
     "cron": "^2.2.0",

@@ -1,6 +1,6 @@
-import { EventMessage } from 'src/classes/eventMessage';
+import { EventMessage } from '../classes/eventMessage';
 import { CronJob } from 'cron';
-import { MessageSender } from 'src/util/messageSender';
+import { MessageSender } from './messageSender';
 
 export class BufferedOutput {
   private sender : MessageSender;

@@ -17,11 +17,11 @@ export class Headhunter {
     this.output = output;
     console.log(`Starting new Headhunter game...`);
     if(env.DB_HOST == undefined || env.DB_PORT == undefined || env.DB_NAME == undefined ||
-      env.DB_USER == undefined || env.DB_PASS == undefined || env.DB_CONN_SIZE == undefined) {
+      env.DB_USER == undefined || env.DB_PWD == undefined || env.DB_CONN_SIZE == undefined) {
       console.log("Missing database connection information. Please check the env.");
       return;
     }
-    this.db = new Database(env.DB_HOST, parseInt(env.DB_PORT), env.DB_USER, env.DB_PASS, parseInt(env.DB_CONN_SIZE));
+    this.db = new Database(env.DB_HOST, parseInt(env.DB_PORT), env.DB_USER, env.DB_PWD, parseInt(env.DB_CONN_SIZE));
     console.log(this.db.checkIfDatabaseExists(env.DB_NAME));
     // load game config from db
     // load game channel id

@@ -4,7 +4,8 @@ export class Database {
 
   private db : Pool;
 
-  public constructor (host : string, port: number, username : string, password : string, connectionSize : number) {
+  public constructor(host : string, port: number, username : string, password : string, connectionSize : number) {
+    console.log("Creating new database connection...");
     this.db = createPool({
       connectionLimit: connectionSize,
       host: host,
@@ -24,7 +25,7 @@ export class Database {
   }
 
   public checkIfDatabaseExists (databaseName : string) : boolean {
-    var a = this.db.query(`SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '${databaseName}'`)
+    var a = this.db.query(`SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '${databaseName}'`);
     a.on('result', (row : RowDataPacket) => {
       if (row.length == 0) {
         return false

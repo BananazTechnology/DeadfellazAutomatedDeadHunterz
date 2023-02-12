@@ -3,23 +3,27 @@ import { of, Observable } from "rxjs";
 
 export class Database {
 
-  private db : Pool;
+  private db? : Pool;
   private dbAffectedRows : boolean = false;
 
   public constructor(host : string, port: number, username : string, password : string, connectionSize : number) {
-    this.db = createPool({
-      connectionLimit: connectionSize,
-      host: host,
-      port: port,
-      user: username,
-      password: password
-    })
+    try {
+      this.db = createPool({
+        connectionLimit: connectionSize,
+        host: host,
+        port: port,
+        user: username,
+        password: password
+      })
+    } catch (error : any) {
+      console.log(error);
+    }
   }
 
   public async createDatabase (databaseName : string) : Promise<boolean> {
     const queryString = `CREATE DATABASE ${databaseName}`;
     var response = await this.queryAndReturn(queryString);
-    return false;
+    return this.successfulQuery(response);
   }
 
   public async checkIfDatabaseExists (databaseName : string) : Promise<boolean> {
@@ -38,13 +42,35 @@ export class Database {
     return false;
   }
 
-  // public async createTable (databaseName : string, tableName : string, tableColumns : string) : Promise<boolean> {
-  //   const queryString = `CREATE TABLE ${databaseName}.${tableName} (${tableColumns})`;
-  //   var response = await this.queryAndReturn(queryString);
-  //   return false;
-  // }
+  public async createTable (databaseName : string, tableName : string, tableColumns : string) : Promise<boolean> {
+    const queryString = `CREATE TABLE ${databaseName}.${tableName} (${tableColumns})`;
+    var response = await this.queryAndReturn(queryString);
+    return this.successfulQuery(response);
+  }
+
+  public async insertIntoTable (databaseName : string, tableName : string, tableColumns : string, tableValues : string) : Promise<boolean> {
+    const queryString = `INSERT INTO ${databaseName}.${tableName} (${tableColumns}) VALUES (${tableValues})`;
+    var response = await this.queryAndReturn(queryString);
+    return this.successfulQuery(response);
+  }
+
+  public async selectFromTable (databaseName : string, tableName : string, tableColumns : string, whereClause : string) : Promise<RowDataPacket[]> {
+    const queryString = `SELECT ${tableColumns} FROM ${databaseName}.${tableName} WHERE ${whereClause}`;
+    var response = await this.queryAndReturn(queryString);
+    return response;
+  }
+
+  public async updateTable (databaseName : string, tableName : string, tableColumns : string, whereClause : string) : Promise<boolean> {
+    const queryString = `UPDATE ${databaseName}.${tableName} SET ${tableColumns} WHERE ${whereClause}`;
+    var response = await this.queryAndReturn(queryString);
+    return this.successfulQuery(response);
+  }
 
   private async queryAndReturn(queryString : string) : Promise<mysql.RowDataPacket[]> {
+    if(this.db === undefined) {
+      console.log(`Failed to query database: Database not initialized`);
+      return [];
+    }
     var result : RowDataPacket[] = [];
     try {
       var response = await this.db.promise().query(queryString);

@@ -20,7 +20,7 @@ ready(client)
 client.login(token)
 
 // Start game
-var headhunter = new Headhunter(client, process.env);
+var headhunter = new Headhunter(client);
 headhunter.loadGame(process.env).then(() => {
   var gameChannelId = headhunter.getGameChannelId();
   var gameCommand = headhunter.getGameCommand();

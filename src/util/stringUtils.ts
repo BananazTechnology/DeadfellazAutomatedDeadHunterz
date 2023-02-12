@@ -15,4 +15,7 @@ export class StringUtils {
   public static csvStringToArray(csvString : string) : string[] {
     return csvString.split(',').map(s => s.trim());
   }
+  public static arrayToCsvString(array : string[]) : string {
+    return array.join(',');
+  }
 }

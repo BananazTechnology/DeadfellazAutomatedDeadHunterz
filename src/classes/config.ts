@@ -15,7 +15,7 @@ export class Config {
         CommandCooldown INT NOT NULL,
         StartTime VARCHAR(255) NOT NULL,
         Answers VARCHAR(255) NOT NULL,
-        Answered INT NOT NULL,
+        Answered VARCHAR(255) NOT NULL,
         PRIMARY KEY (ConfigId)
     `;
     // Object properties
@@ -26,7 +26,7 @@ export class Config {
     private commandCooldown?: number;
     private startTime?: string;
     private answers?: string[];
-    private answered?: number;
+    private answered?: string[];
 
     public constructor (configId : number, dbName: string, tableName : string, db : Database) {
         this.configId = configId;
@@ -57,8 +57,8 @@ export class Config {
     public getAnswers() : string[] {
         return this.answers ? this.answers : []
     }
-    public getAnswered() : number {
-        return this.answered ? this.answered : 0
+    public getAnswered() : string[] {
+        return this.answered ? this.answered : []
     }
 
     // Setters
@@ -86,9 +86,16 @@ export class Config {
         this.writeObject("Answers", StringUtils.arrayToCsvString(answers));
         this.answers = answers
     }
-    public setAnswered(answered : number) : void {
-        this.writeObject("Answered", answered);
+    public setAnswered(answered : string[]) : void {
+        this.writeObject("Answered", StringUtils.arrayToCsvString(answered));
         this.answered = answered
+    }
+
+    // Updaters
+    public addAnswered(answered : string) : void {
+        if(!this.answered) this.answered = [];
+        this.writeObject("Answered", StringUtils.arrayToCsvString(this.answered));
+        this.answered.push(answered);
     }
 
     private async writeObject(columnName : string, value : any) {
@@ -103,7 +110,7 @@ export class Config {
         this.commandCooldown = responseFirstObj.CommandCooldown;
         this.startTime = responseFirstObj.StartTime;
         this.answers = StringUtils.csvStringToArray(responseFirstObj.Answers);
-        this.answered = responseFirstObj.Answered;
+        this.answered = StringUtils.csvStringToArray(responseFirstObj.Answered);
         return this;
     }
   }

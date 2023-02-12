@@ -36,7 +36,8 @@ headhunter.loadGame(process.env).then(() => {
       if (StringUtils.startsWith(message.content, gameCommand)) {
 
         console.log("Message matched game command check")
-        var eventMessage = new EventMessage(message.channelId, message.author.id, message.content);
+        var inboundMessageCleanup = message.content.trim();
+        var eventMessage = new EventMessage(message.channelId, message.author.id, undefined, message.content);
         var response = headhunter.play(eventMessage);
         if(response) message.react('✅');
         console.log("Message processed by game")

@@ -11,6 +11,7 @@ export class Headhunter {
   }
 
   private db!: Database;
+  private config!: Config;
   private output : BufferedOutput;
   private gameChannelId!: string;
   private gameName!: string;
@@ -35,8 +36,8 @@ export class Headhunter {
       console.log("No DB/table configured with that name. Exiting..."); 
       return;
     }
-    var config = new Config(parseInt(env.CONFIG_ID), env.DB_NAME, env.CONFIG_TABLE_NAME, this.db);
-    var configFetched = await config.readObject();
+    this.config = new Config(parseInt(env.CONFIG_ID), env.DB_NAME, env.CONFIG_TABLE_NAME, this.db);
+    var configFetched = await this.config.readObject();
     this.gameChannelId = configFetched.getGameChannelId();
     this.gameName = configFetched.getGameUuid();
     this.gameCommand = configFetched.getGameCommand();
@@ -54,7 +55,25 @@ export class Headhunter {
 
   // interaction handler
   public play(eventMessage : EventMessage) : boolean {
+    // ensure user is allowed to play
+    // TODO: gatekeeper
+    // parse the inbound message
 
-    return false;
+    var answer = this.parseAnswer(eventMessage.getInboundMessage());
+    // check if the answer string is in the configs answer list
+    if(this.config.getAnswers().includes(answer) && !this.config.getAnswered().includes(answer)) {
+      // remove the answer from available options
+      this.config.addAnswered(answer);
+      // player has a proper guess
+    }
+    return true;
+  }
+
+  private parseAnswer(command : string) : string {
+    // split the message by a space for command:answer
+    var messageSplit = command.split(" ");
+    // get answer
+    var answer = messageSplit[1];
+    return answer;
   }
 }

@@ -27,6 +27,7 @@ export class Headhunter {
       return;
     }
     this.db = new Database(env.DB_HOST, parseInt(env.DB_PORT), env.DB_USER, env.DB_PWD, parseInt(env.DB_CONN_SIZE));
+    await this.db.createDatabase(env.DB_NAME)
     if(!await this.db.checkIfDatabaseExists(env.DB_NAME)) await this.db.createDatabase(env.DB_NAME);
 
     this.gameChannelId = '1073973649826140180';

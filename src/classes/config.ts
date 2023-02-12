@@ -1,4 +1,5 @@
-import { Database } from "src/database/database";
+import { Database } from "../database/database";
+import { StringUtils } from "../util/stringUtils";
 
 export class Config {
     // Object data settings
@@ -62,34 +63,47 @@ export class Config {
 
     // Setters
     public setGameUuid(uuid : string) : void {
-        this.gameUuid = uuid
+        this.writeObject("GameUuid", uuid);
+        this.gameUuid = uuid;
     }
     public setGameChannelId(channelId : string) : void {
+        this.writeObject("GameChannelId", channelId);
         this.gameChannelId = channelId
     }
     public setGameCommand(command : string) : void {
+        this.writeObject("GameCommand", command);
         this.gameCommand = command
     }
     public setCommandCooldown(cooldown : number) : void {
+        this.writeObject("CommandCooldown", cooldown.toString());
         this.commandCooldown = cooldown
     }
     public setStartTime(startTime : string) : void {
+        this.writeObject("StartTime", startTime);
         this.startTime = startTime
     }
     public setAnswers(answers : string[]) : void {
-        //TODO: convert from string array to csv
+        this.writeObject("Answers", StringUtils.arrayToCsvString(answers));
         this.answers = answers
     }
     public setAnswered(answered : number) : void {
+        this.writeObject("Answered", answered);
         this.answered = answered
     }
 
-    private writeObject(columnName : string, value : string) : void {
-        // this.db.update(this.TABLE_DEFINITION, this.configId, columnName, value)
+    private async writeObject(columnName : string, value : any) {
+        this.db.updateTable(this.DB_NAME, this.TABLE_NAME, `${columnName} = '${value}'`, `ConfigId = ${this.configId}`);
     }
     public async readObject() : Promise<Config> {
         var response = await this.db.selectFromTable(this.DB_NAME, this.TABLE_NAME, this.TABLE_ORDER, `ConfigId = ${this.configId}`);
-        console.log(response);
+        var responseFirstObj = response[0];
+        this.gameUuid = responseFirstObj.GameUuid;
+        this.gameChannelId = responseFirstObj.GameChannelId;
+        this.gameCommand = responseFirstObj.GameCommand;
+        this.commandCooldown = responseFirstObj.CommandCooldown;
+        this.startTime = responseFirstObj.StartTime;
+        this.answers = StringUtils.csvStringToArray(responseFirstObj.Answers);
+        this.answered = responseFirstObj.Answered;
         return this;
     }
   }

@@ -1,5 +1,5 @@
 import { Client, TextChannel } from 'discord.js'
-import { EventMessage } from 'src/classes/eventMessage';
+import { EventMessage } from '../classes/eventMessage';
 
 export class DiscordUtils {
   // User attributes. Should always be private as updating information will need to be reflected in the db

@@ -11,11 +11,11 @@ export class Config {
         ConfigId INT NOT NULL AUTO_INCREMENT,
         GameUuid VARCHAR(255) NOT NULL,
         GameChannelId VARCHAR(255) NOT NULL,
-        GameCommand VARCHAR(255) NOT NULL,
+        GameCommand VARCHAR(255),
         CommandCooldown INT NOT NULL,
         StartTime VARCHAR(255) NOT NULL,
         Answers VARCHAR(255) NOT NULL,
-        Answered VARCHAR(255) NOT NULL,
+        Answered VARCHAR(255),
         PRIMARY KEY (ConfigId)
     `;
     // Object properties
@@ -94,8 +94,9 @@ export class Config {
     // Updaters
     public addAnswered(answered : string) : void {
         if(!this.answered) this.answered = [];
+        this.answered.unshift(answered);
+        console.log(this.answered)
         this.writeObject("Answered", StringUtils.arrayToCsvString(this.answered));
-        this.answered.push(answered);
     }
 
     private async writeObject(columnName : string, value : any) {
@@ -107,6 +108,7 @@ export class Config {
         this.gameUuid = responseFirstObj.GameUuid;
         this.gameChannelId = responseFirstObj.GameChannelId;
         this.gameCommand = responseFirstObj.GameCommand;
+        /// TODO: test output with null values
         this.commandCooldown = responseFirstObj.CommandCooldown;
         this.startTime = responseFirstObj.StartTime;
         this.answers = StringUtils.csvStringToArray(responseFirstObj.Answers);

@@ -31,13 +31,15 @@ headhunter.loadGame(process.env).then(() => {
     if (message.author.id === client.user?.id) return
     if (message.channelId === gameChannelId) {
 
-      console.log("Message received in game channel from " + message.author.username + ": " + message.content)
+      var cleanMessage = message.content.trim().toLowerCase();
+      console.log("Message received in game channel from " + message.author.username + ": " + cleanMessage)
+      var messageMatched = StringUtils.startsWith(cleanMessage, gameCommand);
+      var messageWithoutCommand = cleanMessage.replace(`${gameCommand.toLowerCase()}`, "").trim();
+      console.log("Message: " + messageWithoutCommand)
 
-      if (StringUtils.startsWith(message.content, gameCommand)) {
-
+      if (messageMatched && messageWithoutCommand.length > 0) {
         console.log("Message matched game command check")
-        var inboundMessageCleanup = message.content.trim();
-        var eventMessage = new EventMessage(message.channelId, message.author.id, undefined, message.content);
+        var eventMessage = new EventMessage(message.channelId, message.author.id, undefined, cleanMessage);
         var response = headhunter.play(eventMessage);
         if(response) message.react('✅');
         console.log("Message processed by game")

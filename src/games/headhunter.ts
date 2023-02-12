@@ -11,6 +11,7 @@ export class Headhunter {
   }
 
   private db!: Database;
+  //TODO: frequestly update this from db
   private config!: Config;
   private output : BufferedOutput;
   private gameChannelId!: string;

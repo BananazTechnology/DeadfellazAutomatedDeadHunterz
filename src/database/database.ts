@@ -85,7 +85,6 @@ export class Database {
   }
 
   private successfulQuery(response : any) : boolean {
-    console.log(response);
     if(response === undefined) return false;
     if(response.affectedRows === undefined) return false;
     if(response.affectedRows > 0) return true;

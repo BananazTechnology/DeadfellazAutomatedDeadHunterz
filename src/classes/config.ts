@@ -95,7 +95,6 @@ export class Config {
     public addAnswered(answered : string) : void {
         if(!this.answered) this.answered = [];
         this.answered.unshift(answered);
-        console.log(this.answered)
         this.writeObject("Answered", StringUtils.arrayToCsvString(this.answered));
     }
 

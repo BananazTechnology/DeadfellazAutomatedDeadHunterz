@@ -13,6 +13,7 @@ export class StringUtils {
   }
 
   public static csvStringToArray(csvString : string) : string[] {
+    if(csvString.length < 1) return [];
     return csvString.split(',').map(s => s.trim());
   }
   public static arrayToCsvString(array : string[]) : string {

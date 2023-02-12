@@ -40,10 +40,10 @@ headhunter.loadGame(process.env).then(() => {
       if (messageMatched && messageWithoutCommand.length > 0) {
         console.log("Message matched game command check")
         var eventMessage = new EventMessage(message.channelId, message.author.id, undefined, cleanMessage);
-        var response = headhunter.play(eventMessage);
-        if(response) message.react('✅');
-        console.log("Message processed by game")
-        
+        headhunter.play(eventMessage).then((state) => {
+          if(state) message.react('✅');
+          console.log("Message processed by game")
+        });
       } else {
         message.react('❌');
         console.log("Message did not match game command check")

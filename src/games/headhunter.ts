@@ -38,11 +38,15 @@ export class Headhunter {
       return;
     }
     this.config = new Config(parseInt(env.CONFIG_ID), env.DB_NAME, env.CONFIG_TABLE_NAME, this.db);
+    await this.updateConfigAndInMemoryValues();
+    console.log(`Loaded Headhunter game data.`);
+  }
+
+  private async updateConfigAndInMemoryValues() {
     var configFetched = await this.config.readObject();
     this.gameChannelId = configFetched.getGameChannelId();
     this.gameName = configFetched.getGameUuid();
     this.gameCommand = configFetched.getGameCommand();
-    console.log(`Loaded Headhunter game data.`);
   }
 
   // getters
@@ -54,10 +58,20 @@ export class Headhunter {
     return this.gameCommand;
   }
 
+  private entryGatekeeper(eventMessage : EventMessage) : boolean {
+    
+    return false;
+  }
+
   // interaction handler
-  public play(eventMessage : EventMessage) : boolean {
+  public async play(eventMessage : EventMessage) : Promise<boolean> {
+    await this.updateConfigAndInMemoryValues(); 
     // ensure user is allowed to play
     // TODO: gatekeeper
+    if(!this.entryGatekeeper(eventMessage)) {
+      
+      return true;
+    }
     // parse the inbound message
 
     var answer = this.parseAnswer(eventMessage.getInboundMessage());
@@ -66,7 +80,10 @@ export class Headhunter {
       // remove the answer from available options
       this.config.addAnswered(answer);
       // player has a proper guess
+      // TODO: generate proper win message
+      eventMessage.setOutboundMessage(`<@${eventMessage.getUser}> You win!`);
     }
+    this.output.addEventMessage(eventMessage);
     return true;
   }
 

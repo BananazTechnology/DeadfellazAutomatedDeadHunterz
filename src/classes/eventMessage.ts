@@ -1,21 +1,21 @@
 export class EventMessage {
   // User attributes. Should always be private as updating information will need to be reflected in the db
-  private channel?: string;
+  private channelId?: string;
   private user?: string;
   private outboundMessage?: string;
   private inboundMessage?: string;
 
   // constructor is private. User object sould be created by one of the get or create commands
-  public constructor (channel?: string, user?: string, outboundMessage?: string, inboundMessage?: string) {
-    this.channel = channel;
+  public constructor (channelId?: string, user?: string, outboundMessage?: string, inboundMessage?: string) {
+    this.channelId = channelId;
     this.user = user;
     this.outboundMessage = outboundMessage;
     this.inboundMessage = inboundMessage;
   }
 
   // Getters
-  public getChannel () : string {
-    return this.channel ? this.channel : "";
+  public getChannelId () : string {
+    return this.channelId ? this.channelId : "";
   }
 
   public getUser () : string {
@@ -31,8 +31,8 @@ export class EventMessage {
   }
 
   // Setters
-  public setChannel (channel : string) {
-    this.channel = channel;
+  public setChannelId (channelId : string) {
+    this.channelId = channelId;
   }
 
   public setUser (user : string) {

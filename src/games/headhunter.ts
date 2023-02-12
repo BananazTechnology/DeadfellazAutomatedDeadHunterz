@@ -1,7 +1,8 @@
+import { Client } from 'discord.js';
 import { EventMessage } from '../classes/eventMessage';
 import { Database } from '../database/database';
 import { BufferedOutput } from '../util/bufferedOutput';
-import { MessageSender } from '../util/messageSender';
+import { DiscordUtils } from '../util/discordUtils';
 
 export class Headhunter {
 
@@ -10,28 +11,25 @@ export class Headhunter {
   private gameChannelId!: string;
   private gameName!: string;
   private gameCommand!: string;
+  private discordUtils: DiscordUtils;
 
-
-  public constructor (sender : MessageSender, env : NodeJS.ProcessEnv) {
-    var output = new BufferedOutput(sender);
-    this.output = output;
-    console.log(`Starting new Headhunter game...`);
-    this.loadGame(env);
+  public constructor (client : Client, env : NodeJS.ProcessEnv) {
+    this.discordUtils = new DiscordUtils(client);
+    this.output = new BufferedOutput(this.discordUtils);
+    // this.loadGame(env);
   }
   
-  private async loadGame(env : NodeJS.ProcessEnv) {
+  public async loadGame(env : NodeJS.ProcessEnv) {
+    console.log(`Starting load of Headhunter game data...`);
     if(env.DB_HOST == undefined || env.DB_PORT == undefined || env.DB_NAME == undefined ||
       env.DB_USER == undefined || env.DB_PWD == undefined || env.DB_CONN_SIZE == undefined) {
       console.log("Missing database connection information. Please check the env.");
       return;
     }
     this.db = new Database(env.DB_HOST, parseInt(env.DB_PORT), env.DB_USER, env.DB_PWD, parseInt(env.DB_CONN_SIZE));
-    // if(!this.db.checkIfDatabaseExists(env.DB_NAME)) this.db.createDatabase(env.DB_NAME);
-    console.log("construct " + await this.db.checkIfDatabaseExists(env.DB_NAME));
-    // load game config from db
-    // load game channel id
-    // load game name
-    this.gameChannelId = '123456789';
+    if(!await this.db.checkIfDatabaseExists(env.DB_NAME)) await this.db.createDatabase(env.DB_NAME);
+
+    this.gameChannelId = '1073973649826140180';
     this.gameName = 'Headhunter';
     this.gameCommand = 'headhunter';
   }

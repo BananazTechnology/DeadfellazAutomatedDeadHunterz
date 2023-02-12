@@ -1,5 +1,4 @@
 import { Client, Message } from 'discord.js'
-import { MessageSender } from './util/messageSender'
 import * as dotenv from 'dotenv'
 import path from 'path'
 import ready from './hooks/ready'
@@ -20,29 +19,32 @@ ready(client)
 
 client.login(token)
 
-// Start discord message sender
-var messageSender = new MessageSender(client);
 // Start game
-var headhunter = new Headhunter(messageSender, process.env);
-var gameChannelId = headhunter.getGameChannelId();
-var gameCommand = headhunter.getGameCommand();
-  // pass message sender - game creates own queue system
-  // db connection
-// listen here for new input and run the game for the user
-console.log("Listening for messages in game channel " + gameChannelId + " with command " + gameCommand)
-client.on('messageCreate', message => {
-  if (message.author.id === client.user?.id) return
-  if (message.channelId === gameChannelId) {
-    console.log("Message received in game channel from " + message.author.username + ": " + message.content)
-    if (StringUtils.startsWith(message.content, gameCommand)) {
-      console.log("Message matched game command check")
-      var eventMessage = new EventMessage(message.channelId, message.author.id, message.content);
-      var response = headhunter.play(eventMessage);
-      if(response) message.react('✅');
-      console.log("Message processed by game")
-    } else {
-      message.react('❌');
-      console.log("Message did not match game command check")
+var headhunter = new Headhunter(client, process.env);
+headhunter.loadGame(process.env).then(() => {
+  var gameChannelId = headhunter.getGameChannelId();
+  var gameCommand = headhunter.getGameCommand();
+  console.log("Listening for messages in game channel " + gameChannelId + " with command " + gameCommand)
+
+  client.on('messageCreate', message => {
+
+    if (message.author.id === client.user?.id) return
+    if (message.channelId === gameChannelId) {
+
+      console.log("Message received in game channel from " + message.author.username + ": " + message.content)
+
+      if (StringUtils.startsWith(message.content, gameCommand)) {
+
+        console.log("Message matched game command check")
+        var eventMessage = new EventMessage(message.channelId, message.author.id, message.content);
+        var response = headhunter.play(eventMessage);
+        if(response) message.react('✅');
+        console.log("Message processed by game")
+        
+      } else {
+        message.react('❌');
+        console.log("Message did not match game command check")
+      }
     }
-  }
-})
+  })
+});

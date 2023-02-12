@@ -1,15 +1,15 @@
 import { EventMessage } from '../classes/eventMessage';
 import { CronJob } from 'cron';
-import { MessageSender } from './messageSender';
+import { DiscordUtils } from './discordUtils';
 
 export class BufferedOutput {
-  private sender : MessageSender;
+  private sender : DiscordUtils;
   private buffer : EventMessage[] = [];
   private cronJob: CronJob;
   private whenToRun : string = "* * * * * *";
   private maxBufferSize : number = 7;
 
-  public constructor (sender : MessageSender) {
+  public constructor (sender : DiscordUtils) {
     this.sender = sender;
     this.cronJob = new CronJob(this.whenToRun, this.compileAndSendBatch);
     console.log(`Starting new BufferedOutput on interval ${this.whenToRun}`);
@@ -30,7 +30,7 @@ export class BufferedOutput {
         const eventMessage = this.buffer.shift();
         if(!eventMessage) break;
         finalOutputMessage += `${eventMessage.getOutboundMessage()}\n\n`;
-        outboundBufferedObj.setChannel(eventMessage.getChannel());
+        outboundBufferedObj.setChannelId(eventMessage.getChannelId());
       } else break;
     }
     outboundBufferedObj.setOutboundMessage(finalOutputMessage);

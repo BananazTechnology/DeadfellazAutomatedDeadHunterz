@@ -11,7 +11,15 @@ export class BufferedOutput {
 
   public constructor (sender : DiscordUtils) {
     this.sender = sender;
-    this.cronJob = new CronJob(this.whenToRun, this.compileAndSendBatch);
+    this.cronJob = new CronJob(
+      this.whenToRun, 
+      this.compileAndSendBatch, 
+      undefined, 
+      undefined, 
+      "America/New_York", 
+      this
+    );
+    this.cronJob.start()
     console.log(`Starting new BufferedOutput on interval ${this.whenToRun}`);
   }
 
@@ -21,7 +29,9 @@ export class BufferedOutput {
   }
 
   private async compileAndSendBatch() {
-    console.log("hi");
+    console.log(typeof(this.buffer))
+    console.log(this.buffer)
+    if(!this.buffer) return;
     var bufferSize = this.buffer.length;
     var finalOutputMessage = "";
     var outboundBufferedObj = new EventMessage();

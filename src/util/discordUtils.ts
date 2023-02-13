@@ -10,6 +10,7 @@ export class DiscordUtils {
   }
 
   public async sendEventMessage(eventMessage : EventMessage) {
+    console.log(this.discord.channels)
     const channel = await this.discord.channels.fetch(eventMessage.getChannelId());
     // Using a type guard to narrow down the correct type
     if (!((channel): channel is TextChannel => channel?.type === 'GUILD_TEXT')(channel)) return

@@ -59,7 +59,7 @@ export class Headhunter {
   }
 
   private entryGatekeeper(eventMessage : EventMessage) : boolean {
-    
+    eventMessage.setOutboundMessage(`<@${eventMessage.getUser()}> You are not allowed to play this game.`);
     return false;
   }
 
@@ -68,22 +68,23 @@ export class Headhunter {
     await this.updateConfigAndInMemoryValues(); 
     // ensure user is allowed to play
     // TODO: gatekeeper
-    if(!this.entryGatekeeper(eventMessage)) {
-      
-      return true;
-    }
+    var allowedToPlay = this.entryGatekeeper(eventMessage)
     // parse the inbound message
-
     var answer = this.parseAnswer(eventMessage.getInboundMessage());
     // check if the answer string is in the configs answer list
-    if(this.config.getAnswers().includes(answer) && !this.config.getAnswered().includes(answer)) {
-      // remove the answer from available options
-      this.config.addAnswered(answer);
-      // player has a proper guess
-      // TODO: generate proper win message
-      eventMessage.setOutboundMessage(`<@${eventMessage.getUser}> You win!`);
+    if(this.config.getAnswers().includes(answer) && allowedToPlay) {
+      if(!this.config.getAnswered().includes(answer)) {
+        // remove the answer from available options
+        this.config.addAnswered(answer);
+        // player has a proper guess
+        // TODO: generate proper win message
+        eventMessage.setOutboundMessage(`<@${eventMessage.getUser()}> You win!`);
+      } else {
+        eventMessage.setOutboundMessage(`<@${eventMessage.getUser()}> That answer has been guessed already!`);
+      }
     }
     this.output.addEventMessage(eventMessage);
+    console.log(JSON.stringify(eventMessage))
     return true;
   }
 

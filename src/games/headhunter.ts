@@ -1,9 +1,11 @@
 import { Client } from 'discord.js';
+import { HeadhunterUtils } from '../util/headhunterUtils';
 import { Config } from '../classes/config';
 import { EventMessage } from '../classes/eventMessage';
 import { Database } from '../database/database';
 import { BufferedOutput } from '../util/bufferedOutput';
 import { DiscordUtils } from '../util/discordUtils';
+import { Entry } from '../classes/entry';
 
 export class Headhunter {
   installGame(env: NodeJS.ProcessEnv) {
@@ -59,23 +61,38 @@ export class Headhunter {
   }
 
   private entryGatekeeper(eventMessage : EventMessage) : boolean {
+    var playerLastEntry = HeadhunterUtils.getPlayerLastEntry(eventMessage.getUser(), this.config, this.db);
     eventMessage.setOutboundMessage(`<@${eventMessage.getUser()}> You are not allowed to play this game.`);
-    return false;
+
+    //TODO: return false
+    return true;
   }
 
   // interaction handler
   public async play(eventMessage : EventMessage) : Promise<boolean> {
     await this.updateConfigAndInMemoryValues(); 
     // ensure user is allowed to play
-    // TODO: gatekeeper
     var allowedToPlay = this.entryGatekeeper(eventMessage)
+    if(!allowedToPlay) {
+      this.output.addEventMessage(eventMessage);
+      return true;
+    }
     // parse the inbound message
     var answer = this.parseAnswer(eventMessage.getInboundMessage());
+    var entry : Entry = new Entry(
+      this.config.getDBName(), 
+      this.config.getEntriesTableName(), 
+      this.db, 
+      eventMessage.getUser(),
+      this.config.getGameUuid(),
+      answer
+    );
     // check if the answer string is in the configs answer list
     if(this.config.getAnswers().includes(answer) && allowedToPlay) {
       if(!this.config.getAnswered().includes(answer)) {
         // remove the answer from available options
         this.config.addAnswered(answer);
+        entry.setWinner(true);
         // player has a proper guess
         // TODO: generate proper win message
         eventMessage.setOutboundMessage(`<@${eventMessage.getUser()}> You win!`);
@@ -83,6 +100,7 @@ export class Headhunter {
         eventMessage.setOutboundMessage(`<@${eventMessage.getUser()}> That answer has been guessed already!`);
       }
     }
+    entry.save();
     this.output.addEventMessage(eventMessage);
     console.log(JSON.stringify(eventMessage))
     return true;

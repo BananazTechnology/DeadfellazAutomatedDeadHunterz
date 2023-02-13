@@ -13,10 +13,13 @@ export class StringUtils {
   }
 
   public static csvStringToArray(csvString : string) : string[] {
+    if(csvString === null) return [];
     if(csvString.length < 1) return [];
     return csvString.split(',').map(s => s.trim());
   }
   public static arrayToCsvString(array : string[]) : string {
+    if(array === null) return '';
+    if(array.length < 1) return '';
     return array.join(',');
   }
 }

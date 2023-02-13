@@ -55,18 +55,30 @@ export class Database {
     return this.successfulQuery(response);
   }
 
-  public async selectFromTable (databaseName : string, tableName : string, tableColumns : string, whereClause : string) : Promise<RowDataPacket[]> {
-    const queryString = `SELECT ${tableColumns} FROM ${databaseName}.${tableName} WHERE ${whereClause}`;
+  public async selectFromTable (databaseName : string, tableName : string, tableColumns : string, whereClause? : string, orderBy? : string, limit? : number) : Promise<RowDataPacket[]> {
+    const queryString = `
+      SELECT ${tableColumns} 
+      FROM ${databaseName}.${tableName}
+      ${whereClause ? ' WHERE ' + whereClause : ''}
+      ${orderBy ? ' ORDER BY ' + orderBy : ''}
+      ${limit ? ' LIMIT ' + limit : ''}
+    `;
     var response = await this.queryAndReturn(queryString);
     console.log(`Selected from DB: ${JSON.stringify(response)}`)
     return response;
   }
 
-  public async updateTable (databaseName : string, tableName : string, tableColumns : string, whereClause : string) : Promise<boolean> {
+  public async updateFromTable (databaseName : string, tableName : string, tableColumns : string, whereClause : string) : Promise<boolean> {
     const queryString = `UPDATE ${databaseName}.${tableName} SET ${tableColumns} WHERE ${whereClause}`;
     var response = await this.queryAndReturn(queryString);
     console.log(`Updated in DB: ${queryString} with response ${JSON.stringify(response)}`)
     return this.successfulQuery(response);
+  }
+
+  public async query(queryString : string) : Promise<RowDataPacket[]> {
+    var response = await this.queryAndReturn(queryString);
+    console.log(`Queried DB: ${queryString} with response ${JSON.stringify(response)}`)
+    return response;
   }
 
   private async queryAndReturn(queryString : string) : Promise<mysql.RowDataPacket[]> {

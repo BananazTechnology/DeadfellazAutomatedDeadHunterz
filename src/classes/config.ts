@@ -6,20 +6,10 @@ export class Config {
     private TABLE_NAME: string;
     private DB_NAME: string;
     private db : Database;
-    private TABLE_ORDER = `GameUuid, GameChannelId, GameCommand, CommandCooldown, StartTime, Answers, Answered`;
-    private TABLE_DEFINITION = `
-        ConfigId INT NOT NULL AUTO_INCREMENT,
-        GameUuid VARCHAR(255) NOT NULL,
-        GameChannelId VARCHAR(255) NOT NULL,
-        GameCommand VARCHAR(255),
-        CommandCooldown INT NOT NULL,
-        StartTime VARCHAR(255) NOT NULL,
-        Answers VARCHAR(255) NOT NULL,
-        Answered VARCHAR(255),
-        PRIMARY KEY (ConfigId)
-    `;
+    private TABLE_ORDER = `GameUuid, GameChannelId, GameCommand, EntriesTableName, CommandCooldown, StartTime, Answers, Answered`;
     // Object properties
     private configId: number;
+    private entriesTableName?: string;
     private gameUuid?: string;
     private gameChannelId?: string;
     private gameCommand?: string;
@@ -36,8 +26,14 @@ export class Config {
     }
 
     // Getters
+    public getDBName() : string {
+        return this.DB_NAME;
+    }
     public getConfigId() : number {
         return this.configId
+    }
+    public getEntriesTableName() : string {
+        return this.entriesTableName ? this.entriesTableName : this.getGameUuid();
     }
     public getGameUuid() : string {
         return this.gameUuid ? this.gameUuid : ""
@@ -99,7 +95,7 @@ export class Config {
     }
 
     private async writeObject(columnName : string, value : any) {
-        this.db.updateTable(this.DB_NAME, this.TABLE_NAME, `${columnName} = '${value}'`, `ConfigId = ${this.configId}`);
+        this.db.updateFromTable(this.DB_NAME, this.TABLE_NAME, `${columnName} = '${value}'`, `ConfigId = ${this.configId}`);
     }
     public async readObject() : Promise<Config> {
         var response = await this.db.selectFromTable(this.DB_NAME, this.TABLE_NAME, this.TABLE_ORDER, `ConfigId = ${this.configId}`);
@@ -108,6 +104,7 @@ export class Config {
         this.gameChannelId = responseFirstObj.GameChannelId;
         this.gameCommand = responseFirstObj.GameCommand;
         /// TODO: test output with null values
+        this.entriesTableName = responseFirstObj.EntriesTableName;
         this.commandCooldown = responseFirstObj.CommandCooldown;
         this.startTime = responseFirstObj.StartTime;
         this.answers = StringUtils.csvStringToArray(responseFirstObj.Answers);

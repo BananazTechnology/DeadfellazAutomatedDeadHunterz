@@ -7,7 +7,6 @@ export default (client: Client): void => {
     }
     console.log("------")
     console.log(`${client.user.username} is online`)
-    // console.log(`If you need to invite this bot to your server use ${client.generateInvite()}`)
     console.log("------")
   })
 }

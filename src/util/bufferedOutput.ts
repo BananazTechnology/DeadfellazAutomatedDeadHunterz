@@ -29,9 +29,8 @@ export class BufferedOutput {
   }
 
   private async compileAndSendBatch() {
-    console.log(typeof(this.buffer))
-    console.log(this.buffer)
     if(!this.buffer) return;
+    if(this.buffer.length == 0) return;
     var bufferSize = this.buffer.length;
     var finalOutputMessage = "";
     var outboundBufferedObj = new EventMessage();

@@ -3,7 +3,7 @@ import * as dotenv from 'dotenv'
 import path from 'path'
 import ready from './hooks/ready'
 import { Headhunter } from './games/headhunter'
-import { StringUtils } from './util/stringUtils'
+import { StringUtils } from './utils/stringUtils'
 import { EventMessage } from './classes/eventMessage'
 
 dotenv.config({ path: path.resolve('./.env') })

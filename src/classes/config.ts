@@ -1,5 +1,5 @@
 import { Database } from "../database/database";
-import { StringUtils } from "../util/stringUtils";
+import { StringUtils } from "../utils/stringUtils";
 
 export class Config {
     // Object data settings
@@ -14,7 +14,7 @@ export class Config {
     private gameChannelId?: string;
     private gameCommand?: string;
     private commandCooldown?: number;
-    private startTime?: string;
+    private startTime?: number;
     private answers?: string[];
     private answered?: string[];
 
@@ -47,8 +47,8 @@ export class Config {
     public getCommandCooldown() : number {
         return this.commandCooldown ? this.commandCooldown : 0
     }
-    public getStartTime() : string {
-        return this.startTime ? this.startTime : ""
+    public getStartTime() : number {
+        return this.startTime ? this.startTime : 0
     }
     public getAnswers() : string[] {
         return this.answers ? this.answers : []
@@ -74,7 +74,7 @@ export class Config {
         this.writeObject("CommandCooldown", cooldown.toString());
         this.commandCooldown = cooldown
     }
-    public setStartTime(startTime : string) : void {
+    public setStartTime(startTime : number) : void {
         this.writeObject("StartTime", startTime);
         this.startTime = startTime
     }
@@ -95,7 +95,13 @@ export class Config {
     }
 
     private async writeObject(columnName : string, value : any) {
-        this.db.updateFromTable(this.DB_NAME, this.TABLE_NAME, `${columnName} = '${value}'`, `ConfigId = ${this.configId}`);
+        //determine type
+        var valueAsProperType;
+        if(typeof value === "string")  valueAsProperType = `'${value}'`;
+        else if(typeof value === "number") valueAsProperType = value;
+        else if(typeof value === "boolean") valueAsProperType = value ? 1 : 0;
+        //write
+        this.db.updateFromTable(this.DB_NAME, this.TABLE_NAME, `${columnName} = ${valueAsProperType}`, `ConfigId = ${this.configId}`);
     }
     public async readObject() : Promise<Config> {
         var response = await this.db.selectFromTable(this.DB_NAME, this.TABLE_NAME, this.TABLE_ORDER, `ConfigId = ${this.configId}`);
@@ -105,8 +111,8 @@ export class Config {
         this.gameCommand = responseFirstObj.GameCommand;
         /// TODO: test output with null values
         this.entriesTableName = responseFirstObj.EntriesTableName;
-        this.commandCooldown = responseFirstObj.CommandCooldown;
-        this.startTime = responseFirstObj.StartTime;
+        this.commandCooldown = parseInt(responseFirstObj.CommandCooldown);
+        this.startTime = parseInt(responseFirstObj.StartTime);
         this.answers = StringUtils.csvStringToArray(responseFirstObj.Answers);
         this.answered = StringUtils.csvStringToArray(responseFirstObj.Answered);
         return this;

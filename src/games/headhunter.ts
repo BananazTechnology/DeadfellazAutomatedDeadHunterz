@@ -1,11 +1,12 @@
 import { Client } from 'discord.js';
-import { HeadhunterUtils } from '../util/headhunterUtils';
+import { HeadhunterUtils } from '../utils/headhunterUtils';
 import { Config } from '../classes/config';
 import { EventMessage } from '../classes/eventMessage';
 import { Database } from '../database/database';
-import { BufferedOutput } from '../util/bufferedOutput';
-import { DiscordUtils } from '../util/discordUtils';
+import { BufferedOutput } from '../utils/bufferedOutput';
+import { DiscordUtils } from '../utils/discordUtils';
 import { Entry } from '../classes/entry';
+import { TimeUtils } from '../utils/timeUtils';
 
 export class Headhunter {
   installGame(env: NodeJS.ProcessEnv) {
@@ -60,11 +61,17 @@ export class Headhunter {
     return this.gameCommand;
   }
 
-  private entryGatekeeper(eventMessage : EventMessage) : boolean {
-    var playerLastEntry = HeadhunterUtils.getPlayerLastEntry(eventMessage.getUser(), this.config, this.db);
-    eventMessage.setOutboundMessage(`<@${eventMessage.getUser()}> You are not allowed to play this game.`);
-
-    //TODO: return false
+  private async entryGatekeeper(eventMessage : EventMessage) : Promise<boolean> {
+    var gameActive = (Math.floor(new Date().getTime() / 1000)) > this.config.getStartTime();
+    if(!gameActive) {
+      eventMessage.setOutboundMessage(`<@${eventMessage.getUser()}> Game is not active.`);
+      return false;
+    }
+    var playerLastEntry = await HeadhunterUtils.getPlayerLastEntry(eventMessage.getUser(), this.config, this.db);
+    if(TimeUtils.diff(new Date(), playerLastEntry) < this.config.getCommandCooldown()) {
+      eventMessage.setOutboundMessage(`<@${eventMessage.getUser()}> You have played too recently.`);
+      return false;
+    }
     return true;
   }
 
@@ -72,7 +79,7 @@ export class Headhunter {
   public async play(eventMessage : EventMessage) : Promise<boolean> {
     await this.updateConfigAndInMemoryValues(); 
     // ensure user is allowed to play
-    var allowedToPlay = this.entryGatekeeper(eventMessage)
+    var allowedToPlay = await this.entryGatekeeper(eventMessage)
     if(!allowedToPlay) {
       this.output.addEventMessage(eventMessage);
       return true;
@@ -98,6 +105,8 @@ export class Headhunter {
         eventMessage.setOutboundMessage(`<@${eventMessage.getUser()}> You win!`);
       } else {
         eventMessage.setOutboundMessage(`<@${eventMessage.getUser()}> That answer has been guessed already!`);
+        this.output.addEventMessage(eventMessage);
+        return true;
       }
     }
     entry.save();

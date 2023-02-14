@@ -26,8 +26,8 @@ CREATE TABLE IF NOT EXISTS `deadfellaz`.`gameConfigs` (
     GameChannelId VARCHAR(255) NOT NULL,
     GameCommand VARCHAR(255) NOT NULL,
     EntriesTableName VARCHAR(255) NOT NULL,
-    CommandCooldown INT,
-    StartTime VARCHAR(255) NOT NULL,
+    CommandCooldown INT, -- In Seconds --
+    StartTime BIGINT NOT NULL,
     AnswersToGenerate INT NOT NULL,
     Answers VARCHAR(255) NOT NULL,
     Answered VARCHAR(255),
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `deadfellaz`.`headhuntersV2Entries` (
     UserId VARCHAR(255) NOT NULL,
     GameUuid VARCHAR(255) NOT NULL,
     Answer VARCHAR(255) NOT NULL,
-    Created VARCHAR(255) NOT NULL,
+    Created BIGINT NOT NULL,
     Wallet VARCHAR(255),
     Winner BOOLEAN NOT NULL DEFAULT FALSE,
     PRIMARY KEY (Id))

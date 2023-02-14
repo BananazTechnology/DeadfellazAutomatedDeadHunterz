@@ -5,12 +5,12 @@ export class Entry {
     private TABLE_NAME: string;
     private DB_NAME: string;
     private db : Database;
-    private TABLE_ORDER = `UserId, Answer, Created, Wallet, Winner`;
+    private TABLE_ORDER = `UserId, GameUuid, Answer, Created, Wallet, Winner`;
     // Object properties
     private userId: string;
     private gameUuid: string;
     private answer? : string;
-    private created? : string;
+    private created : number;
     private wallet? : string;
     private winner? : boolean;
 
@@ -22,19 +22,16 @@ export class Entry {
         this.db = db;
         this.userId = userId;
         this.gameUuid = gameUuid;
+        this.winner = false;
         if(answer) this.answer = answer;
         // TODO: set created to creent tie
-        this.created = (new Date().getTime() / 1000).toString();
+        this.created = Math.floor(new Date().getTime() / 1000);
         if(wallet) this.wallet = wallet;
-        if(winner) this.winner = winner;
     }
 
     // Setters
     public setAnswer(answer : string) : void {
         this.answer = answer;
-    }
-    public setCreated(created : string) : void {
-        this.created = created;
     }
     public setWallet(wallet : string) : void {
         this.wallet = wallet;
@@ -45,9 +42,9 @@ export class Entry {
 
     // Save
     public async save() : Promise<boolean> {
-        if(!this.answer || !this.created || !this.wallet || !this.winner) return false;
+        if(!this.answer || !this.created || !this.winner) return false;
         this.db.insertIntoTable(this.DB_NAME, this.TABLE_NAME, this.TABLE_ORDER, 
-            `'${this.userId}', '${this.gameUuid}', '${this.answer}', '${this.created}', '${this.wallet}', '${this.winner ? 1 : 0}'`);
+            `'${this.userId}', '${this.gameUuid}', '${this.answer}', ${this.created}, ${this.wallet ? `${this.wallet}` : "null"}, '${this.winner ? 1 : 0}'`);
         return true;
     }
   }

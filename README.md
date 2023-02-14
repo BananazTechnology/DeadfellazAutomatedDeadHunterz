@@ -27,12 +27,16 @@ CREATE TABLE IF NOT EXISTS `deadfellaz`.`gameConfigs` (
     GameUuid VARCHAR(255) NOT NULL,
     GameChannelId VARCHAR(255) NOT NULL,
     GameCommand VARCHAR(255) NOT NULL,
+    GameRunning BOOLEAN NOT NULL DEFAULT FALSE,
     EntriesTableName VARCHAR(255) NOT NULL,
     CommandCooldown INT, -- In Seconds --
     StartTime BIGINT NOT NULL,
     AnswersToGenerate INT NOT NULL,
     Answers VARCHAR(255) NOT NULL,
     Answered VARCHAR(255),
+    Min INT NOT NULL,
+    Max INT NOT NULL,
+    Notes VARCHAR(255),
     PRIMARY KEY (ConfigId))
 ```
 

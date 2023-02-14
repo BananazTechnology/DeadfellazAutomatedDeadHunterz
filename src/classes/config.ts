@@ -6,17 +6,20 @@ export class Config {
     private TABLE_NAME: string;
     private DB_NAME: string;
     private db : Database;
-    private TABLE_ORDER = `GameUuid, GameChannelId, GameCommand, EntriesTableName, CommandCooldown, StartTime, Answers, Answered`;
+    private TABLE_ORDER = `GameUuid, GameChannelId, GameCommand, GameRunning, EntriesTableName, CommandCooldown, StartTime, Answers, Answered, Min, Max`;
     // Object properties
     private configId: number;
     private entriesTableName?: string;
     private gameUuid?: string;
     private gameChannelId?: string;
     private gameCommand?: string;
+    private gameRunning?: boolean;
     private commandCooldown?: number;
     private startTime?: number;
     private answers?: string[];
     private answered?: string[];
+    private min? : number;
+    private max? : number;
 
     public constructor (configId : number, dbName: string, tableName : string, db : Database) {
         this.configId = configId;
@@ -44,6 +47,9 @@ export class Config {
     public getGameCommand() : string {
         return this.gameCommand ? this.gameCommand : ""
     }
+    public getGameRunning() : boolean {
+        return this.gameRunning ? this.gameRunning : false
+    }
     public getCommandCooldown() : number {
         return this.commandCooldown ? this.commandCooldown : 0
     }
@@ -55,6 +61,12 @@ export class Config {
     }
     public getAnswered() : string[] {
         return this.answered ? this.answered : []
+    }
+    public getMin() : number {
+        return this.min ? this.min : 0
+    }
+    public getMax() : number {
+        return this.max ? this.max : 0
     }
 
     // Setters
@@ -69,6 +81,10 @@ export class Config {
     public setGameCommand(command : string) : void {
         this.writeObject("GameCommand", command);
         this.gameCommand = command
+    }
+    public setGameRunning(running : boolean) : void {
+        this.writeObject("GameRunning", running);
+        this.gameRunning = running
     }
     public setCommandCooldown(cooldown : number) : void {
         this.writeObject("CommandCooldown", cooldown.toString());
@@ -109,12 +125,15 @@ export class Config {
         this.gameUuid = responseFirstObj.GameUuid;
         this.gameChannelId = responseFirstObj.GameChannelId;
         this.gameCommand = responseFirstObj.GameCommand;
+        this.gameRunning = responseFirstObj.GameRunning === 1 ? true : false;
         /// TODO: test output with null values
         this.entriesTableName = responseFirstObj.EntriesTableName;
         this.commandCooldown = parseInt(responseFirstObj.CommandCooldown);
         this.startTime = parseInt(responseFirstObj.StartTime);
         this.answers = StringUtils.csvStringToArray(responseFirstObj.Answers);
         this.answered = StringUtils.csvStringToArray(responseFirstObj.Answered);
+        this.min = parseInt(responseFirstObj.Min);
+        this.max = parseInt(responseFirstObj.Max);
         return this;
     }
   }

@@ -31,6 +31,7 @@ export class Headhunter {
   
   public async loadGame(env : NodeJS.ProcessEnv) {
     console.log(`Starting load of Headhunter game data...`);
+    // Ensure we have all ENV
     if(env.DB_HOST == undefined || env.DB_PORT == undefined || env.DB_NAME == undefined ||
       env.DB_USER == undefined || env.DB_PWD == undefined || env.DB_CONN_SIZE == undefined ||
       env.CONFIG_TABLE_NAME == undefined || env.CONFIG_ID == undefined || env.USER_API_URL == undefined || 
@@ -39,14 +40,18 @@ export class Headhunter {
       console.log("Missing game information. Exiting...");
       return;
     }
+    // Start the DB
     this.userUtils = new UserUtils(env.USER_API_URL, env.USER_API_KEY);
     this.db = new Database(env.DB_HOST, parseInt(env.DB_PORT), env.DB_USER, env.DB_PWD, parseInt(env.DB_CONN_SIZE));
     if(!await this.db.checkIfTableExists(env.DB_NAME, env.CONFIG_TABLE_NAME)) {
       console.log("No DB/table configured with that name. Exiting..."); 
       return;
     }
+    // Map internal Config object from TB table
     this.config = new Config(parseInt(env.CONFIG_ID), env.DB_NAME, env.CONFIG_TABLE_NAME, this.db);
     await this.updateConfigAndInMemoryValues();
+    // Startup the proper end/start scheduler
+    //TODO: implement
     console.log(`Loaded Headhunter game data.`);
   }
 

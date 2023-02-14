@@ -1,10 +1,8 @@
 import mysql, { createPool, OkPacket, Pool, RowDataPacket } from 'mysql2'
-import { of, Observable } from "rxjs"; 
 
 export class Database {
 
   private db? : Pool;
-  private dbAffectedRows : boolean = false;
 
   public constructor(host : string, port: number, username : string, password : string, connectionSize : number) {
     try {

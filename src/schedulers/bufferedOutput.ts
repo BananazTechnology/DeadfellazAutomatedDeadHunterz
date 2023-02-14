@@ -1,6 +1,6 @@
 import { EventMessage } from '../classes/eventMessage';
 import { CronJob } from 'cron';
-import { DiscordUtils } from './discordUtils';
+import { DiscordUtils } from '../utils/discordUtils';
 
 export class BufferedOutput {
   private sender : DiscordUtils;

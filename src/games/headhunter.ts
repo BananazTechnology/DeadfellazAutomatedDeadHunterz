@@ -3,10 +3,11 @@ import { HeadhunterUtils } from '../utils/headhunterUtils';
 import { Config } from '../classes/config';
 import { EventMessage } from '../classes/eventMessage';
 import { Database } from '../database/database';
-import { BufferedOutput } from '../utils/bufferedOutput';
+import { BufferedOutput } from '../schedulers/bufferedOutput';
 import { DiscordUtils } from '../utils/discordUtils';
 import { Entry } from '../classes/entry';
 import { TimeUtils } from '../utils/timeUtils';
+import { UserUtils } from '../utils/userUtils';
 
 export class Headhunter {
   installGame(env: NodeJS.ProcessEnv) {
@@ -21,6 +22,7 @@ export class Headhunter {
   private gameName!: string;
   private gameCommand!: string;
   private discordUtils: DiscordUtils;
+  private userUtils!: UserUtils;
 
   public constructor (client : Client) {
     this.discordUtils = new DiscordUtils(client);
@@ -31,10 +33,13 @@ export class Headhunter {
     console.log(`Starting load of Headhunter game data...`);
     if(env.DB_HOST == undefined || env.DB_PORT == undefined || env.DB_NAME == undefined ||
       env.DB_USER == undefined || env.DB_PWD == undefined || env.DB_CONN_SIZE == undefined ||
-      env.CONFIG_TABLE_NAME == undefined || env.CONFIG_ID == undefined) {
+      env.CONFIG_TABLE_NAME == undefined || env.CONFIG_ID == undefined || env.USER_API_URL == undefined || 
+      env.USER_API_KEY == undefined) {
+
       console.log("Missing game information. Exiting...");
       return;
     }
+    this.userUtils = new UserUtils(env.USER_API_URL, env.USER_API_KEY);
     this.db = new Database(env.DB_HOST, parseInt(env.DB_PORT), env.DB_USER, env.DB_PWD, parseInt(env.DB_CONN_SIZE));
     if(!await this.db.checkIfTableExists(env.DB_NAME, env.CONFIG_TABLE_NAME)) {
       console.log("No DB/table configured with that name. Exiting..."); 
@@ -62,11 +67,20 @@ export class Headhunter {
   }
 
   private async entryGatekeeper(eventMessage : EventMessage) : Promise<boolean> {
+    // Ensure player has profile
+    var userHasProfile = await this.userUtils.checkIfUserIsRegistered(eventMessage.getUser());
+    if(!userHasProfile) {
+      eventMessage.setOutboundMessage(`<@${eventMessage.getUser()}> You need to register a profile with \`!user <wallet>\`.`);
+      return false;
+    }
+    // Ensure game is active
     var gameActive = (Math.floor(new Date().getTime() / 1000)) > this.config.getStartTime();
     if(!gameActive) {
       eventMessage.setOutboundMessage(`<@${eventMessage.getUser()}> Game is not active.`);
       return false;
     }
+
+    // Ensure player not on cooldown
     var playerLastEntry = await HeadhunterUtils.getPlayerLastEntry(eventMessage.getUser(), this.config, this.db);
     if(TimeUtils.diff(new Date(), playerLastEntry) < this.config.getCommandCooldown()) {
       eventMessage.setOutboundMessage(`<@${eventMessage.getUser()}> You have played too recently.`);

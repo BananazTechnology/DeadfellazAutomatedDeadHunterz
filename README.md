@@ -12,6 +12,8 @@ DB_NAME="deadfellaz"
 CONFIG_TABLE_NAME="gameConfigs"
 CONFIG_ID="1"
 DSCRD_BOT_TK="BOT.TOKEN.CODE"
+USER_API_URL="https://proxy.bananaz.tech/api/users"
+USER_API_KEY="key"
 ```
 
 ### Database Info

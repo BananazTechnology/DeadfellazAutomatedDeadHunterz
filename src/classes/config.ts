@@ -6,7 +6,7 @@ export class Config {
     private TABLE_NAME: string;
     private DB_NAME: string;
     private db : Database;
-    private TABLE_ORDER = `GameUuid, GameChannelId, GameCommand, GameRunning, EntriesTableName, CommandCooldown, StartTime, Answers, Answered, Min, Max`;
+    private TABLE_ORDER = `GameUuid, GameChannelId, GameCommand, GameRunning, EntriesTableName, CommandCooldown, StartTime, AnswersToGenerate, Answers, Answered, Min, Max`;
     // Object properties
     private configId: number;
     private entriesTableName?: string;
@@ -16,6 +16,7 @@ export class Config {
     private gameRunning?: boolean;
     private commandCooldown?: number;
     private startTime?: number;
+    private answersToGenerate?: number;
     private answers?: string[];
     private answered?: string[];
     private min? : number;
@@ -55,6 +56,9 @@ export class Config {
     }
     public getStartTime() : number {
         return this.startTime ? this.startTime : 0
+    }
+    public getAnswersToGenerate() : number {
+        return this.answersToGenerate ? this.answersToGenerate : 0
     }
     public getAnswers() : string[] {
         return this.answers ? this.answers : []
@@ -131,6 +135,7 @@ export class Config {
         this.commandCooldown = parseInt(responseFirstObj.CommandCooldown);
         this.startTime = parseInt(responseFirstObj.StartTime);
         this.answers = StringUtils.csvStringToArray(responseFirstObj.Answers);
+        this.answersToGenerate = parseInt(responseFirstObj.AnswersToGenerate);
         this.answered = StringUtils.csvStringToArray(responseFirstObj.Answered);
         this.min = parseInt(responseFirstObj.Min);
         this.max = parseInt(responseFirstObj.Max);

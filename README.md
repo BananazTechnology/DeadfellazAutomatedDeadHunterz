@@ -2,6 +2,7 @@
 
 ### Environment Info
 ```
+BOT_DEBUG=true
 TZ="UTC" # Very important as all times are in UTC
 DB_PORT="3306"
 DB_CONN_SIZE="10"

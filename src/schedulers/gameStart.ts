@@ -31,8 +31,8 @@ export class GameStart {
     if(!gameActive) return;
     //  Set game on
     this.config.setGameRunning(true);
-    // Grab NFTs
-    // Use AI to generate hints
+    // TODO: Grab NFTs
+    // TODO: Use AI to generate hints
     // Write hints to Discord to indicate the game started
     var evntMsg : EventMessage = 
       new EventMessage(

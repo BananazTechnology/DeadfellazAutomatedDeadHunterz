@@ -45,7 +45,7 @@ export class GameEnd {
     var newUuid : string = crypto.randomUUID();
     this.config.setGameUuid(newUuid);
     // Generate new start time and save to DB
-    var timeIncrease = (24 * 60 * 60);
+    var timeIncrease = (24 * 60 * 60); // 24hrs in seconds
     var previousStartTime = this.config.getStartTime();
     this.config.setStartTime(previousStartTime + timeIncrease);
     // Thank the players

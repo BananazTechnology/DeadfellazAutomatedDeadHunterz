@@ -8,8 +8,8 @@ import { DiscordUtils } from '../utils/discordUtils';
 import { Entry } from '../classes/entry';
 import { TimeUtils } from '../utils/timeUtils';
 import { UserUtils } from '../utils/userUtils';
-import { GameEnd } from 'src/schedulers/gameEnd';
-import { GameStart } from 'src/schedulers/gameStart';
+import { GameEnd } from '../schedulers/gameEnd';
+import { GameStart } from '../schedulers/gameStart';
 
 export class Headhunter {
   installGame(env: NodeJS.ProcessEnv) {

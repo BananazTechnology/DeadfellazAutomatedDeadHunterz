@@ -1,17 +1,17 @@
 import { CronJob } from 'cron';
 import { DiscordUtils } from '../utils/discordUtils';
 import { Config } from '../classes/config';
-import { v6 as uuidv6 } from 'uuid';
-
+import { EventMessage } from '../classes/eventMessage';
+import { GameStart } from './gameStart';
 
 export class GameEnd {
-  private sender : DiscordUtils;
+  private discUtils : DiscordUtils;
   private cronJob: CronJob;
   private config : Config;
   private whenToRun : string = "* * * * * *";
 
-  public constructor (sender : DiscordUtils, conf : Config) {
-    this.sender = sender;
+  public constructor (discUtils : DiscordUtils, conf : Config) {
+    this.discUtils = discUtils;
     this.config = conf;
     this.cronJob = new CronJob(
       this.whenToRun, 
@@ -26,12 +26,12 @@ export class GameEnd {
   }
 
   private async send() {
-    // TODO: Check if all answers have been guessed and only continue if so
+    // Check if all answers have been guessed and only continue if so
     var allAnswered = (this.config.getAnswers().length == this.config.getAnswered().length);
     if(!allAnswered) return;
-    // TODO: set game off
+    // set game off
     this.config.setGameRunning(false);
-    // TODO: Guess new answers
+    // Guess new answers
     var newAnswers : string[] = [];
     for(var i = 0; i < this.config.getAnswersToGenerate(); i++) {
       var rand : number = 
@@ -39,13 +39,27 @@ export class GameEnd {
       var randAsString : string = rand.toString();
       newAnswers.push(randAsString);
     }
+    this.config.setAnswered([]);
     this.config.setAnswers(newAnswers);
-    // TODO: Guess new game UUID
-    var newUuid : string = uuidv6();
-    //TODO: Generate new start time and save to DB
-    //TODO: Thank the players
-    //TODO: Start new GameStart listener
-    //TODO: Stop this.cronJob
+    // Guess new game UUID
+    var newUuid : string = crypto.randomUUID();
+    this.config.setGameUuid(newUuid);
+    // Generate new start time and save to DB
+    var timeIncrease = (24 * 60 * 60);
+    var previousStartTime = this.config.getStartTime();
+    this.config.setStartTime(previousStartTime + timeIncrease);
+    // Thank the players
+    var evntMsg : EventMessage = 
+      new EventMessage(
+        this.config.getGameChannelId(),
+        undefined,
+        `@everyone Thank you for playing!`,
+        undefined,);
+    this.discUtils.sendEventMessage(evntMsg);
+    // Start new GameStart listener
+    new GameStart(this.discUtils, this.config);
+    // Stop this.cronJob
+    this.cronJob.stop();
   }
 
 }

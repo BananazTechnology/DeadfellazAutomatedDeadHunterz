@@ -26,24 +26,24 @@ export class GameStart {
   }
 
   private async send() {
-    //TODO: Wait for start time to be before now and continue if so
+    // Wait for start time to be before now and continue if so
     var gameActive = (Math.floor(new Date().getTime() / 1000)) > this.config.getStartTime();
     if(!gameActive) return;
-    // TODO: Set game on
+    //  Set game on
     this.config.setGameRunning(true);
-    //TODO: Grab NFTs
-    //TODO: Use AI to generate hints
-    //TODO: Write hints to Discord to indicate the game started
+    // Grab NFTs
+    // Use AI to generate hints
+    // Write hints to Discord to indicate the game started
     var evntMsg : EventMessage = 
       new EventMessage(
         this.config.getGameChannelId(),
         undefined,
-        `@everyone The game has started!`,
+        `everyone The game has started!`,
         undefined,);
     this.discUtils.sendEventMessage(evntMsg);
-    // TODO: Start new GameEnd listener
+    //  Start new GameEnd listener
     new GameEnd(this.discUtils, this.config);
-    //TODO: Stop this.cronJob
+    // Stop this.cronJob
     this.cronJob.stop();
   }
 

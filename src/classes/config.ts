@@ -47,7 +47,7 @@ export class Config {
     public getGameCommand() : string {
         return this.gameCommand ? this.gameCommand : ""
     }
-    public getGameRunning() : boolean {
+    public isGameRunning() : boolean {
         return this.gameRunning ? this.gameRunning : false
     }
     public getCommandCooldown() : number {

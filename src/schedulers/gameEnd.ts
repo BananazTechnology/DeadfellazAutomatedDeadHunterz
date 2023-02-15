@@ -28,6 +28,7 @@ export class GameEnd {
     //TODO: Generate new start time and save to DB
     //TODO: Thank the players
     //TODO: Start new GameStart listener
+    //TODO: Stop this.cronJob
   }
 
 }

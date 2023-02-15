@@ -1,15 +1,17 @@
 import { CronJob } from 'cron';
 import { DiscordUtils } from '../utils/discordUtils';
 import { Config } from '../classes/config';
+import { EventMessage } from '../classes/eventMessage';
+import { GameEnd } from './gameEnd';
 
 export class GameStart {
-  private sender : DiscordUtils;
+  private discUtils : DiscordUtils;
   private cronJob: CronJob;
   private config : Config;
   private whenToRun : string = "* * * * * *";
 
-  public constructor (sender : DiscordUtils, conf : Config) {
-    this.sender = sender;
+  public constructor (discUtils : DiscordUtils, conf : Config) {
+    this.discUtils = discUtils;
     this.config = conf;
     this.cronJob = new CronJob(
       this.whenToRun, 
@@ -25,11 +27,22 @@ export class GameStart {
 
   private async send() {
     //TODO: Wait for start time to be before now and continue if so
-    //TODO: Generate new numbers and save to DB
+    var gameActive = (Math.floor(new Date().getTime() / 1000)) > this.config.getStartTime();
+    if(!gameActive) return;
     //TODO: Grab NFTs
     //TODO: Use AI to generate hints
-    //TODO: Write hints to Discord to indicate the game started 
+    //TODO: Write hints to Discord to indicate the game started
+    var evntMsg : EventMessage = 
+      new EventMessage(
+        this.config.getGameChannelId(),
+        undefined,
+        `@everyone The game has started!`,
+        undefined,);
+    this.discUtils.sendEventMessage(evntMsg);
     // TODO: Start new GameEnd listener
+    new GameEnd(this.discUtils, this.config);
+    //TODO: Stop this.cronJob
+    this.cronJob.stop();
   }
 
 }

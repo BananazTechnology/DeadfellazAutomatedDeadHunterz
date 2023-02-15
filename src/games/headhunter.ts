@@ -8,6 +8,8 @@ import { DiscordUtils } from '../utils/discordUtils';
 import { Entry } from '../classes/entry';
 import { TimeUtils } from '../utils/timeUtils';
 import { UserUtils } from '../utils/userUtils';
+import { GameEnd } from 'src/schedulers/gameEnd';
+import { GameStart } from 'src/schedulers/gameStart';
 
 export class Headhunter {
   installGame(env: NodeJS.ProcessEnv) {
@@ -51,7 +53,9 @@ export class Headhunter {
     this.config = new Config(parseInt(env.CONFIG_ID), env.DB_NAME, env.CONFIG_TABLE_NAME, this.db);
     await this.updateConfigAndInMemoryValues();
     // Startup the proper end/start scheduler
-    //TODO: implement
+    (this.config.isGameRunning()) ? 
+      new GameEnd(this.discordUtils, this.config) : 
+        new GameStart(this.discordUtils, this.config);
     console.log(`Loaded Headhunter game data.`);
   }
 

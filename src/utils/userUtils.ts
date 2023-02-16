@@ -7,9 +7,9 @@ export class UserUtils {
     private API_URL;
     private API_KEY;
 
-    constructor(apiurl : string, apikey : string) {
+    constructor(apiurl : string, apikey : string|undefined) {
         this.API_URL = apiurl;
-        this.API_KEY = apikey;
+        if(apikey) this.API_KEY = apikey;
     }
 
     public async getUserWalletByDiscordId(userId : string) : Promise<string|undefined> {

@@ -92,8 +92,9 @@ export class Headhunter {
 
     // Ensure player not on cooldown
     let playerLastEntry = await HeadhunterUtils.getPlayerLastEntry(eventMessage.getUser(), this.config, this.db);
+    // console.log(`Timout ${TimeUtils.diff(new Date(), playerLastEntry) < this.config.getCommandCooldown()}`)
     if(TimeUtils.diff(new Date(), playerLastEntry) < this.config.getCommandCooldown()) {
-      eventMessage.setOutboundMessage(`<@${eventMessage.getUser()}> You have played too recently.`);
+      eventMessage.setOutboundMessage(`<@${eventMessage.getUser()}> You have played too recently. Try again in <t:${Math.floor(playerLastEntry.getTime() / 1000) + this.config.getCommandCooldown()}:R>`);
       return false;
     }
     return true;

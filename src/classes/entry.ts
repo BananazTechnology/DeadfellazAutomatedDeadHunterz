@@ -42,9 +42,9 @@ export class Entry {
 
     // Save
     public async save() : Promise<boolean> {
-        if(!this.answer || !this.created || !this.winner) return false;
+        if(!this.answer || !this.created) return false;
         this.db.insertIntoTable(this.DB_NAME, this.TABLE_NAME, this.TABLE_ORDER, 
-            `'${this.userId}', '${this.gameUuid}', '${this.answer}', ${this.created}, ${this.wallet ? `'${this.wallet}'` : "null"}, '${this.winner ? 1 : 0}'`);
+            `'${this.userId}', '${this.gameUuid}', '${this.answer}', ${this.created}, ${this.wallet ? `'${this.wallet}'` : 'null'}, ${this.winner ? 1 : 0}`);
         return true;
     }
   }

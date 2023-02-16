@@ -33,8 +33,7 @@ export class Headhunter {
     // Ensure we have all ENV
     if(env.DB_HOST == undefined || env.DB_PORT == undefined || env.DB_NAME == undefined ||
       env.DB_USER == undefined || env.DB_PWD == undefined || env.DB_CONN_SIZE == undefined ||
-      env.CONFIG_TABLE_NAME == undefined || env.CONFIG_ID == undefined || env.USER_API_URL == undefined || 
-      env.USER_API_KEY == undefined) {
+      env.CONFIG_TABLE_NAME == undefined || env.CONFIG_ID == undefined || env.USER_API_URL == undefined) {
 
       console.log("Missing game information. Exiting...");
       return;

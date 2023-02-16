@@ -1,9 +1,9 @@
 version: "3.8"
 
 services:
-  reactionbot:
-    image: bananaztech/reactionbot:latest
-    container_name: reactionbot-df-prod
+  deadfellaz-automated-deadhunterz:
+    image: bananaztech/deadfellaz-automated-deadhunterz:latest
+    container_name: deadfellaz-automated-deadhunterz-prod
     restart: always
     environment:
       DB_PORT: 3306

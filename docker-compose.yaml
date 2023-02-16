@@ -1,9 +1,9 @@
 version: "3.8"
 
 services:
-  DeadfellazAutomatedDeadHunterz:
-    image: bananaztech/DeadfellazAutomatedDeadHunterz:latest
-    container_name: DeadfellazAutomatedDeadHunterz-df-prod
+  deadfellaz-automated-deadhunterz:
+    image: bananaztech/deadfellaz-automated-deadhunterz:latest
+    container_name: deadfellaz-automated-deadhunterz-prod
     restart: always
     environment:
       DB_PORT: 3306

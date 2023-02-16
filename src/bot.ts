@@ -30,23 +30,31 @@ headhunter.loadGame(process.env).then(() => {
 
     if (message.author.id === client.user?.id) return
     if (message.channelId === gameChannelId) {
-
+      // General message cleanup
       let cleanMessage = message.content.trim().toLowerCase();
+      let matchedGameCmd = StringUtils.startsWith(cleanMessage, gameCommand);
+      let msgWOGameCommand = cleanMessage.replace(`${gameCommand.toLowerCase()}`, "").trim();
+      let matchedLeaderboardCmd = StringUtils.startsWith(cleanMessage, "!leaderboard");
       console.log("Message received in game channel from " + message.author.username + ": " + cleanMessage)
-      let messageMatched = StringUtils.startsWith(cleanMessage, gameCommand);
-      let messageWithoutCommand = cleanMessage.replace(`${gameCommand.toLowerCase()}`, "").trim();
-      console.log("Message: " + messageWithoutCommand)
+      console.log("Message: " + msgWOGameCommand)
 
-      if (messageMatched && messageWithoutCommand.length > 0) {
+      // Check for game command
+      if (matchedGameCmd && msgWOGameCommand.length > 0) {
         console.log("Message matched game command check")
         let eventMessage = new EventMessage(message.channelId, message.author.id, undefined, cleanMessage);
         headhunter.play(eventMessage).then((state) => {
           if(state) message.react('✅');
           console.log("Message processed by game")
         });
-      } else {
-        message.react('❌');
-        console.log("Message did not match game command check")
+      }
+      // Check if leaderboard
+      if (matchedLeaderboardCmd) {
+        console.log("Message matched leaderboard command check")
+        let eventMessage = new EventMessage(message.channelId, message.author.id, undefined, cleanMessage);
+        headhunter.leaderboard(eventMessage).then((state) => {
+          if(state) message.react('✅');
+          console.log("Message processed by leaderboard")
+        });
       }
     }
   })

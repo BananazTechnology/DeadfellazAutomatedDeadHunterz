@@ -5,7 +5,7 @@ export class Entry {
     private TABLE_NAME: string;
     private DB_NAME: string;
     private db : Database;
-    private TABLE_ORDER = `UserId, GameUuid, Answer, Created, Wallet, Winner`;
+    public TABLE_ORDER = `UserId, GameUuid, Answer, Created, Wallet, Winner`;
     // Object properties
     private userId: string;
     private gameUuid: string;
@@ -27,6 +27,11 @@ export class Entry {
         // TODO: set created to creent tie
         this.created = Math.floor(new Date().getTime() / 1000);
         if(wallet) this.wallet = wallet;
+    }
+
+    // Getters
+    public getTableOrder() : string {
+        return this.TABLE_ORDER;
     }
 
     // Setters

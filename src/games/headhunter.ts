@@ -1,4 +1,4 @@
-import { Client } from 'discord.js';
+import { Client, MessageEmbed } from 'discord.js';
 import { HeadhunterUtils } from '../utils/headhunterUtils';
 import { Config } from '../classes/config';
 import { EventMessage } from '../classes/eventMessage';
@@ -12,9 +12,6 @@ import { GameEnd } from '../schedulers/gameEnd';
 import { GameStart } from '../schedulers/gameStart';
 
 export class Headhunter {
-  installGame(env: NodeJS.ProcessEnv) {
-    throw new Error('Method not implemented.');
-  }
 
   private db!: Database;
   //TODO: frequestly update this from db
@@ -73,6 +70,24 @@ export class Headhunter {
 
   public getGameCommand() : string {
     return this.gameCommand;
+  }
+
+  public async leaderboard(eventMessage : EventMessage) : Promise<boolean> {
+		// Discord only supports so many char per msg
+		// When running a game with more than ~50 people
+		// This will cause the msg to be lost
+    const MAX_PER_MESSAGE : number = 15;
+		let records = await HeadhunterUtils.getLeaderboard(this.config, this.db, MAX_PER_MESSAGE);
+    let msg = "";
+    for(let i = 0; i < records.length; i++) {
+      msg += `\`${i+1}. \` ${`<@${records[i].UserId}>`} • **${records[i].Wins}** Wins \n`;
+    }
+    var output = new MessageEmbed()
+      .setColor('#FFC800')
+      .addField(`**Statistics Leaderboard**`, msg)
+      .setTimestamp();
+    this.discordUtils.sendEmbeds(eventMessage.getChannelId(), [output]);
+    return true;
   }
 
   private async entryGatekeeper(eventMessage : EventMessage) : Promise<boolean> {

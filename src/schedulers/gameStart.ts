@@ -46,7 +46,8 @@ export class GameStart {
       let newHintImage = await DeadfellazUtils.getImageURLFromProjectIdAndTokenId(getNewProjectId, getNewTokenId)
       let newDiscordHintEmbed = new MessageEmbed()
         .setColor('#FFC800')
-        .setImage(newHintImage);
+        .setImage(newHintImage)
+        .setTimestamp();
       discordHints.push(newDiscordHintEmbed);
     }
     this.config.setAnswered([]);

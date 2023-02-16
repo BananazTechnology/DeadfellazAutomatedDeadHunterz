@@ -53,11 +53,12 @@ export class Database {
     return this.successfulQuery(response);
   }
 
-  public async selectFromTable (databaseName : string, tableName : string, tableColumns : string, whereClause? : string, orderBy? : string, limit? : number) : Promise<RowDataPacket[]> {
+  public async selectFromTable (databaseName : string, tableName : string, tableColumns : string, whereClause? : string, groupBy? : string, orderBy? : string, limit? : number) : Promise<RowDataPacket[]> {
     const queryString = `
       SELECT ${tableColumns} 
       FROM ${databaseName}.${tableName}
       ${whereClause ? ' WHERE ' + whereClause : ''}
+      ${groupBy ? ' GROUP BY ' + groupBy : ''}
       ${orderBy ? ' ORDER BY ' + orderBy : ''}
       ${limit ? ' LIMIT ' + limit : ''}
     `;

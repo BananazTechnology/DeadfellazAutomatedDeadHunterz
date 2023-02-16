@@ -31,10 +31,10 @@ export class BufferedOutput {
   private async compileAndSendBatch() {
     if(!this.buffer) return;
     if(this.buffer.length == 0) return;
-    var bufferSize = this.buffer.length;
-    var finalOutputMessage = "";
-    var outboundBufferedObj = new EventMessage();
-    for (var i = 0; (i < bufferSize); i++) {
+    let bufferSize = this.buffer.length;
+    let finalOutputMessage = "";
+    let outboundBufferedObj = new EventMessage();
+    for (let i = 0; (i < bufferSize); i++) {
 			if(i < this.maxBufferSize) {
         const eventMessage = this.buffer.shift();
         if(!eventMessage) break;

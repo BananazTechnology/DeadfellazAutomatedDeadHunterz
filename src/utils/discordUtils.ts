@@ -1,4 +1,4 @@
-import { Client, TextChannel } from 'discord.js'
+import { Client, MessageEmbed, MessageEmbedOptions, TextChannel } from 'discord.js'
 import { EventMessage } from '../classes/eventMessage';
 
 export class DiscordUtils {
@@ -14,5 +14,15 @@ export class DiscordUtils {
     // // Using a type guard to narrow down the correct type
     if (!((channel): channel is TextChannel => channel?.type === 'GUILD_TEXT')(channel)) return
     channel.send(eventMessage.getOutboundMessage());
+  }
+
+  public async sendEmbeds(channelId : string, embeds : (MessageEmbed | MessageEmbedOptions)[]) {
+    const channel = await this.discord.channels.fetch(channelId);
+    // // Using a type guard to narrow down the correct type
+    if (!((channel): channel is TextChannel => channel?.type === 'GUILD_TEXT')(channel)) return
+    let MessageOptions = {
+      embeds: embeds
+    }
+    channel.send(MessageOptions);
   }
 }

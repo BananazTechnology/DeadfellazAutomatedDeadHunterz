@@ -20,35 +20,35 @@ export class Database {
 
   public async createDatabase (databaseName : string) : Promise<boolean> {
     const queryString = `CREATE DATABASE ${databaseName}`;
-    var response = await this.queryAndReturn(queryString);
+    let response = await this.queryAndReturn(queryString);
     return this.successfulQuery(response);
   }
 
   public async checkIfDatabaseExists (databaseName : string) : Promise<boolean> {
     const queryString = `SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '${databaseName}'`;
-    var response = await this.queryAndReturn(queryString);
-    var singleResponse = response[0]["SCHEMA_NAME"];
+    let response = await this.queryAndReturn(queryString);
+    let singleResponse = response[0]["SCHEMA_NAME"];
     if(singleResponse == databaseName) return true; 
     return false;
   }
 
   public async checkIfTableExists (databaseName : string, tableName : string) : Promise<boolean> {
     const queryString = `SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '${databaseName}' AND TABLE_NAME = '${tableName}'`;
-    var response = await this.queryAndReturn(queryString);
-    var singleResponse = response[0]["TABLE_NAME"];
+    let response = await this.queryAndReturn(queryString);
+    let singleResponse = response[0]["TABLE_NAME"];
     if(singleResponse == tableName) return true;
     return false;
   }
 
   public async createTable (databaseName : string, tableName : string, tableColumns : string) : Promise<boolean> {
     const queryString = `CREATE TABLE ${databaseName}.${tableName} (${tableColumns})`;
-    var response = await this.queryAndReturn(queryString);
+    let response = await this.queryAndReturn(queryString);
     return this.successfulQuery(response);
   }
 
   public async insertIntoTable (databaseName : string, tableName : string, tableColumns : string, tableValues : string) : Promise<boolean> {
     const queryString = `INSERT INTO ${databaseName}.${tableName} (${tableColumns}) VALUES (${tableValues})`;
-    var response = await this.queryAndReturn(queryString);
+    let response = await this.queryAndReturn(queryString);
     console.log(`Inserted in DB: ${queryString} with response ${JSON.stringify(response)}`)
     return this.successfulQuery(response);
   }
@@ -61,20 +61,20 @@ export class Database {
       ${orderBy ? ' ORDER BY ' + orderBy : ''}
       ${limit ? ' LIMIT ' + limit : ''}
     `;
-    var response = await this.queryAndReturn(queryString);
+    let response = await this.queryAndReturn(queryString);
     console.log(`Selected from DB: ${JSON.stringify(response)}`)
     return response;
   }
 
   public async updateFromTable (databaseName : string, tableName : string, tableColumns : string, whereClause : string) : Promise<boolean> {
     const queryString = `UPDATE ${databaseName}.${tableName} SET ${tableColumns} WHERE ${whereClause}`;
-    var response = await this.queryAndReturn(queryString);
+    let response = await this.queryAndReturn(queryString);
     console.log(`Updated in DB: ${queryString} with response ${JSON.stringify(response)}`)
     return this.successfulQuery(response);
   }
 
   public async query(queryString : string) : Promise<RowDataPacket[]> {
-    var response = await this.queryAndReturn(queryString);
+    let response = await this.queryAndReturn(queryString);
     console.log(`Queried DB: ${queryString} with response ${JSON.stringify(response)}`)
     return response;
   }
@@ -84,9 +84,9 @@ export class Database {
       console.log(`Failed to query database: Database not initialized`);
       return [];
     }
-    var result : RowDataPacket[] = [];
+    let result : RowDataPacket[] = [];
     try {
-      var response = await this.db.promise().query(queryString);
+      let response = await this.db.promise().query(queryString);
       result = <RowDataPacket[]> response[0];
     } catch(err : any) {
       console.log(`Failed to query database: ${JSON.stringify(err.sqlMessage)}`);

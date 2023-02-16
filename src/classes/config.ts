@@ -6,7 +6,7 @@ export class Config {
     private TABLE_NAME: string;
     private DB_NAME: string;
     private db : Database;
-    private TABLE_ORDER = `GameUuid, GameChannelId, GameCommand, GameRunning, EntriesTableName, CommandCooldown, StartTime, AnswersToGenerate, Answers, Answered, Min, Max`;
+    private TABLE_ORDER = `GameUuid, GameChannelId, GameCommand, GameRunning, EntriesTableName, CommandCooldown, StartTime, AnswersToGenerate, Answers, Answered`;
     // Object properties
     private configId: number;
     private entriesTableName?: string;
@@ -19,8 +19,6 @@ export class Config {
     private answersToGenerate?: number;
     private answers?: string[];
     private answered?: string[];
-    private min? : number;
-    private max? : number;
 
     public constructor (configId : number, dbName: string, tableName : string, db : Database) {
         this.configId = configId;
@@ -66,12 +64,6 @@ export class Config {
     public getAnswered() : string[] {
         return this.answered ? this.answered : []
     }
-    public getMin() : number {
-        return this.min ? this.min : 0
-    }
-    public getMax() : number {
-        return this.max ? this.max : 0
-    }
 
     // Setters
     public setGameUuid(uuid : string) : void {
@@ -116,7 +108,7 @@ export class Config {
 
     private async writeObject(columnName : string, value : any) {
         //determine type
-        var valueAsProperType;
+        let valueAsProperType;
         if(typeof value === "string")  valueAsProperType = `'${value}'`;
         else if(typeof value === "number") valueAsProperType = value;
         else if(typeof value === "boolean") valueAsProperType = value ? 1 : 0;
@@ -124,8 +116,8 @@ export class Config {
         this.db.updateFromTable(this.DB_NAME, this.TABLE_NAME, `${columnName} = ${valueAsProperType}`, `ConfigId = ${this.configId}`);
     }
     public async readObject() : Promise<Config> {
-        var response = await this.db.selectFromTable(this.DB_NAME, this.TABLE_NAME, this.TABLE_ORDER, `ConfigId = ${this.configId}`);
-        var responseFirstObj = response[0];
+        let response = await this.db.selectFromTable(this.DB_NAME, this.TABLE_NAME, this.TABLE_ORDER, `ConfigId = ${this.configId}`);
+        let responseFirstObj = response[0];
         this.gameUuid = responseFirstObj.GameUuid;
         this.gameChannelId = responseFirstObj.GameChannelId;
         this.gameCommand = responseFirstObj.GameCommand;
@@ -137,8 +129,6 @@ export class Config {
         this.answers = StringUtils.csvStringToArray(responseFirstObj.Answers);
         this.answersToGenerate = parseInt(responseFirstObj.AnswersToGenerate);
         this.answered = StringUtils.csvStringToArray(responseFirstObj.Answered);
-        this.min = parseInt(responseFirstObj.Min);
-        this.max = parseInt(responseFirstObj.Max);
         return this;
     }
   }

@@ -1,4 +1,4 @@
-import axios, { AxiosError } from 'axios'
+import axios from 'axios'
 
 export class UserUtils {
 
@@ -12,19 +12,17 @@ export class UserUtils {
         this.API_KEY = apikey;
     }
 
-    public async checkIfUserIsRegistered(userId : string) : Promise<boolean> {
-        var response = await axios.get(`${this.API_URL}${this.GET_USER_BY_DISCORD}/${userId}${this.API_KEY ? `?${this.API_KEY_DEFINITION}=${this.API_KEY}` : ''}`);
-        if(response.data.length > 0) {
+    public async getUserWalletByDiscordId(userId : string) : Promise<string|undefined> {
+        let response = await axios.get(`${this.API_URL}${this.GET_USER_BY_DISCORD}/${userId}${this.API_KEY ? `?${this.API_KEY_DEFINITION}=${this.API_KEY}` : ''}`);
+        if(JSON.stringify(response.data).length > 0) {
             if(response.data.data) {
                 if(response.data.data.walletAddress) {
-                    console.log(response.data.data.walletAddress);
                     if(response.data.data.walletAddress.length > 0) {
-                        return true;
+                        return response.data.data.walletAddress;
                     }
                 }
             }
         }
-        console.log(response.data);
-        return false;
+        return undefined;
     }
   }

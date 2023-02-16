@@ -60,7 +60,7 @@ export class Headhunter {
   }
 
   private async updateConfigAndInMemoryValues() {
-    var configFetched = await this.config.readObject();
+    let configFetched = await this.config.readObject();
     this.gameChannelId = configFetched.getGameChannelId();
     this.gameName = configFetched.getGameUuid();
     this.gameCommand = configFetched.getGameCommand();
@@ -77,20 +77,21 @@ export class Headhunter {
 
   private async entryGatekeeper(eventMessage : EventMessage) : Promise<boolean> {
     // Ensure player has profile
-    var userHasProfile = await this.userUtils.checkIfUserIsRegistered(eventMessage.getUser());
+    let userHasProfile = await this.userUtils.getUserWalletByDiscordId(eventMessage.getUser());
     if(!userHasProfile) {
       eventMessage.setOutboundMessage(`<@${eventMessage.getUser()}> You need to register a profile with \`!user <wallet>\`.`);
       return false;
     }
+    eventMessage.setWallet(userHasProfile);
     // Ensure game is active
-    var gameActive = (Math.floor(new Date().getTime() / 1000)) > this.config.getStartTime();
+    let gameActive = (Math.floor(new Date().getTime() / 1000)) > this.config.getStartTime();
     if(!gameActive) {
       eventMessage.setOutboundMessage(`<@${eventMessage.getUser()}> Game is not active.`);
       return false;
     }
 
     // Ensure player not on cooldown
-    var playerLastEntry = await HeadhunterUtils.getPlayerLastEntry(eventMessage.getUser(), this.config, this.db);
+    let playerLastEntry = await HeadhunterUtils.getPlayerLastEntry(eventMessage.getUser(), this.config, this.db);
     if(TimeUtils.diff(new Date(), playerLastEntry) < this.config.getCommandCooldown()) {
       eventMessage.setOutboundMessage(`<@${eventMessage.getUser()}> You have played too recently.`);
       return false;
@@ -102,20 +103,21 @@ export class Headhunter {
   public async play(eventMessage : EventMessage) : Promise<boolean> {
     await this.updateConfigAndInMemoryValues(); 
     // ensure user is allowed to play
-    var allowedToPlay = await this.entryGatekeeper(eventMessage)
+    let allowedToPlay = await this.entryGatekeeper(eventMessage)
     if(!allowedToPlay) {
       this.output.addEventMessage(eventMessage);
       return true;
     }
     // parse the inbound message
-    var answer = this.parseAnswer(eventMessage.getInboundMessage());
-    var entry : Entry = new Entry(
+    let answer = this.parseAnswer(eventMessage.getInboundMessage());
+    let entry : Entry = new Entry(
       this.config.getDBName(), 
       this.config.getEntriesTableName(), 
       this.db, 
       eventMessage.getUser(),
       this.config.getGameUuid(),
-      answer
+      answer,
+      eventMessage.getWallet()
     );
     // check if the answer string is in the configs answer list
     if(this.config.getAnswers().includes(answer) && allowedToPlay) {
@@ -128,21 +130,21 @@ export class Headhunter {
         eventMessage.setOutboundMessage(`<@${eventMessage.getUser()}> You win!`);
       } else {
         eventMessage.setOutboundMessage(`<@${eventMessage.getUser()}> That answer has been guessed already!`);
-        this.output.addEventMessage(eventMessage);
-        return true;
       }
+    } else {
+      // player has a bad guess
+      eventMessage.setOutboundMessage(`<@${eventMessage.getUser()}> You guessed incorrectly!`);
     }
     entry.save();
     this.output.addEventMessage(eventMessage);
-    console.log(JSON.stringify(eventMessage))
     return true;
   }
 
   private parseAnswer(command : string) : string {
     // split the message by a space for command:answer
-    var messageSplit = command.split(" ");
+    let messageSplit = command.split(" ");
     // get answer
-    var answer = messageSplit[1];
+    let answer = messageSplit[1];
     return answer;
   }
 }

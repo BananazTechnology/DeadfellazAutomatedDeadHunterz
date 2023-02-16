@@ -27,29 +27,16 @@ export class GameEnd {
 
   private async send() {
     // Check if all answers have been guessed and only continue if so
-    var allAnswered = (this.config.getAnswers().length == this.config.getAnswered().length);
+    let allAnswered = (this.config.getAnswers().length == this.config.getAnswered().length);
     if(!allAnswered) return;
     // set game off
     this.config.setGameRunning(false);
-    // Guess new answers
-    var newAnswers : string[] = [];
-    for(var i = 0; i < this.config.getAnswersToGenerate(); i++) {
-      var rand : number = 
-        Math.floor(Math.random() * (this.config.getMax() - this.config.getMin() + 1) + this.config.getMin());
-      var randAsString : string = rand.toString();
-      newAnswers.push(randAsString);
-    }
-    this.config.setAnswered([]);
-    this.config.setAnswers(newAnswers);
-    // Guess new game UUID
-    var newUuid : string = crypto.randomUUID();
-    this.config.setGameUuid(newUuid);
     // Generate new start time and save to DB
-    var timeIncrease = (24 * 60 * 60); // 24hrs in seconds
-    var previousStartTime = this.config.getStartTime();
+    let timeIncrease = (24 * 60 * 60); // 24hrs in seconds
+    let previousStartTime = this.config.getStartTime();
     this.config.setStartTime(previousStartTime + timeIncrease);
     // Thank the players
-    var evntMsg : EventMessage = 
+    let evntMsg : EventMessage = 
       new EventMessage(
         this.config.getGameChannelId(),
         undefined,

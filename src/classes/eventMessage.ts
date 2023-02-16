@@ -4,13 +4,15 @@ export class EventMessage {
   private user?: string;
   private outboundMessage?: string;
   private inboundMessage?: string;
+  private wallet?: string;
 
   // constructor is private. User object sould be created by one of the get or create commands
-  public constructor (channelId?: string, user?: string, outboundMessage?: string, inboundMessage?: string) {
+  public constructor (channelId?: string, user?: string, outboundMessage?: string, inboundMessage?: string, wallet?: string) {
     this.channelId = channelId;
     this.user = user;
     this.outboundMessage = outboundMessage;
     this.inboundMessage = inboundMessage;
+    this.wallet = wallet;
   }
 
   // Getters
@@ -29,6 +31,10 @@ export class EventMessage {
   public getInboundMessage () : string {
     return this.inboundMessage ? this.inboundMessage : "";
   }
+  
+  public getWallet () : string {
+    return this.wallet ? this.wallet : "";
+  }
 
   // Setters
   public setChannelId (channelId : string) {
@@ -46,4 +52,9 @@ export class EventMessage {
   public setInboundMessage (inboundMessage : string) {
     this.inboundMessage = inboundMessage;
   }
+
+  public setWallet (wallet : string) {
+    this.wallet = wallet;
+  }
+
 }

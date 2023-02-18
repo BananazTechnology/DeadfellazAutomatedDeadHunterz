@@ -6,7 +6,7 @@ export class Config {
     private TABLE_NAME: string;
     private DB_NAME: string;
     private db : Database;
-    private TABLE_ORDER = `GameUuid, GameChannelId, GameCommand, GameRunning, EntriesTableName, CommandCooldown, StartTime, AnswersToGenerate, Answers, Answered`;
+    private TABLE_ORDER = `GameUuid, GameChannelId, GameCommand, GameRunning, EntriesTableName, CommandCooldown, StartTime, AnswersToGenerate, Answers, Answered, Projects`;
     // Object properties
     private configId: number;
     private entriesTableName?: string;
@@ -19,6 +19,7 @@ export class Config {
     private answersToGenerate?: number;
     private answers?: string[];
     private answered?: string[];
+    private projects?: string[];
 
     public constructor (configId : number, dbName: string, tableName : string, db : Database) {
         this.configId = configId;
@@ -64,6 +65,9 @@ export class Config {
     public getAnswered() : string[] {
         return this.answered ? this.answered : []
     }
+    public getProjects() : string[] {
+        return this.projects ? this.projects : []
+    }
 
     // Setters
     public setGameUuid(uuid : string) : void {
@@ -98,12 +102,21 @@ export class Config {
         this.writeObject("Answered", StringUtils.arrayToCsvString(answered));
         this.answered = answered
     }
+    public setProjects(projects : string[]) : void {
+        this.writeObject("Projects", StringUtils.arrayToCsvString(projects));
+        this.projects = projects
+    }
 
     // Updaters
     public addAnswered(answered : string) : void {
         if(!this.answered) this.answered = [];
         this.answered.unshift(answered);
         this.writeObject("Answered", StringUtils.arrayToCsvString(this.answered));
+    }
+    public addProjects(project : string) : void {
+        if(!this.projects) this.projects = [];
+        this.projects.unshift(project);
+        this.writeObject("Projects", StringUtils.arrayToCsvString(this.projects));
     }
 
     private async writeObject(columnName : string, value : any) {
@@ -129,6 +142,7 @@ export class Config {
         this.answers = StringUtils.csvStringToArray(responseFirstObj.Answers);
         this.answersToGenerate = parseInt(responseFirstObj.AnswersToGenerate);
         this.answered = StringUtils.csvStringToArray(responseFirstObj.Answered);
+        this.projects = StringUtils.csvStringToArray(responseFirstObj.Projects);
         return this;
     }
   }

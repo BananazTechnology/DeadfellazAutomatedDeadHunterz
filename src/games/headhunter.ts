@@ -28,7 +28,7 @@ export class Headhunter {
     this.output = new BufferedOutput(this.discordUtils);
   }
   
-  public async loadGame(env : NodeJS.ProcessEnv) {
+  public async loadGame(env : NodeJS.ProcessEnv) : Promise<Headhunter> {
     console.log(`Starting load of Headhunter game data...`);
     // Ensure we have all ENV
     if(env.DB_HOST == undefined || env.DB_PORT == undefined || env.DB_NAME == undefined ||
@@ -36,14 +36,14 @@ export class Headhunter {
       env.CONFIG_TABLE_NAME == undefined || env.CONFIG_ID == undefined || env.USER_API_URL == undefined) {
 
       console.log("Missing game information. Exiting...");
-      return;
+      return this;
     }
     // Start the DB
     this.userUtils = new UserUtils(env.USER_API_URL, env.USER_API_KEY);
     this.db = new Database(env.DB_HOST, parseInt(env.DB_PORT), env.DB_USER, env.DB_PWD, parseInt(env.DB_CONN_SIZE));
     if(!await this.db.checkIfTableExists(env.DB_NAME, env.CONFIG_TABLE_NAME)) {
       console.log("No DB/table configured with that name. Exiting..."); 
-      return;
+      return this;
     }
     // Map internal Config object from TB table
     this.config = new Config(parseInt(env.CONFIG_ID), env.DB_NAME, env.CONFIG_TABLE_NAME, this.db);
@@ -53,6 +53,7 @@ export class Headhunter {
       new GameEnd(this.discordUtils, this.config) : 
         new GameStart(this.discordUtils, this.config);
     console.log(`Loaded Headhunter game data.`);
+    return this;
   }
 
   private async updateConfigAndInMemoryValues() {
@@ -69,6 +70,12 @@ export class Headhunter {
 
   public getGameCommand() : string {
     return this.gameCommand;
+  }
+  public getConfig() : Config {
+    return this.config;
+  }
+  public getDiscordUtils() : DiscordUtils {
+    return this.discordUtils;
   }
 
   public async leaderboard(eventMessage : EventMessage) : Promise<boolean> {

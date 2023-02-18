@@ -39,10 +39,12 @@ export class GameStart {
     // Guess new answers
     let discordHints : MessageEmbed[] = [];
     let newAnswers : string[] = [];
+    let newProjects : string[] = [];
     for(let i = 0; i < this.config.getAnswersToGenerate(); i++) {
       let getNewProjectId = await DeadfellazUtils.getRandomProject();
       let getNewTokenId = await DeadfellazUtils.getRandomTokenId(getNewProjectId);
       newAnswers.push(getNewTokenId.toString());
+      newProjects.push(getNewProjectId.toString());
       let newHintImage = await DeadfellazUtils.getImageURLFromProjectIdAndTokenId(getNewProjectId, getNewTokenId)
       let newDiscordHintEmbed = new MessageEmbed()
         .setColor('#FFC800')
@@ -52,6 +54,7 @@ export class GameStart {
     }
     this.config.setAnswered([]);
     this.config.setAnswers(newAnswers);
+    this.config.setProjects(newProjects);
     // Guess new game UUID
     let newUuid : string = uuidv4();
     this.config.setGameUuid(newUuid);

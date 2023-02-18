@@ -60,6 +60,7 @@ export class DeadfellazUtils {
                 imageURL = await this.getFrenzImageURL(tokenId);
                 break;
         }
+        console.log(`Image URL: ${imageURL}`)
         return imageURL;
     }
 }

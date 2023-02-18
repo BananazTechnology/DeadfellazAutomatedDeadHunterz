@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS `deadfellaz`.`gameConfigs` (
     StartTime BIGINT NOT NULL,
     AnswersToGenerate INT NOT NULL,
     Answers VARCHAR(255) NOT NULL,
+    Projects VARCHAR(255) NOT NULL,
     Answered VARCHAR(255),
     Notes VARCHAR(255),
     PRIMARY KEY (ConfigId))

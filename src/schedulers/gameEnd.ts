@@ -26,14 +26,14 @@ export class GameEnd {
   }
 
   private async send() {
-    // Check if all answers have been guessed and only continue if so
-    let allAnswered = (this.config.getAnswers().length == this.config.getAnswered().length);
-    if(!allAnswered) return;
-    // set game off
-    this.config.setGameRunning(false);
     // Generate new start time and save to DB
     let timeIncrease = (24 * 60 * 60); // 24hrs in seconds
     let previousStartTime = this.config.getStartTime();
+    // Check if all answers have been guessed and only continue if so OR if past 24hrs from start time
+    let allAnswered = (this.config.getAnswers().length == this.config.getAnswered().length);
+    if(!allAnswered || (Math.floor(new Date().getTime() / 1000)) < previousStartTime+timeIncrease) return;
+    // set game off
+    this.config.setGameRunning(false);
     this.config.setStartTime(previousStartTime + timeIncrease);
     // Thank the players
     let evntMsg : EventMessage = 

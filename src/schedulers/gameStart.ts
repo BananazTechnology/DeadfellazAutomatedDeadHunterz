@@ -5,6 +5,7 @@ import { Config } from '../classes/config';
 import {v4 as uuidv4} from 'uuid';
 import { GameEnd } from './gameEnd';
 import { DeadfellazUtils } from '../utils/deadfellazUtils';
+import { EventMessage } from '../classes/eventMessage';
 
 export class GameStart {
   private discUtils : DiscordUtils;
@@ -36,6 +37,14 @@ export class GameStart {
     if(!gameActive) return;
     //  Set game on
     this.config.setGameRunning(true);
+    // Inform users
+    let evntMsg : EventMessage = 
+      new EventMessage(
+        this.config.getGameChannelId(),
+        undefined,
+        `@everyone Welcome to Dead Hunterz, to play this game use the command \`${this.config.getGameCommand()} <insert guess here>\`. The game ends <t:${Math.floor(24 * 60 * 60) + this.config.getStartTime()}:R>!`,
+        undefined,);
+    this.discUtils.sendEventMessage(evntMsg);
     // Guess new answers
     let discordHints : MessageEmbed[] = [];
     let newAnswers : string[] = [];

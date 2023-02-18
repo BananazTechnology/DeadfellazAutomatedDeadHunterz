@@ -45,7 +45,7 @@ headhunter.loadGame(process.env).then((setup) => {
         console.log("Message matched game command check")
         let eventMessage = new EventMessage(message.channelId, message.author.id, undefined, cleanMessage);
         headhunter.play(eventMessage).then((state) => {
-          if(state) console.log("Message processed by game");
+          (state) ? console.log("Message successfully processed by game") : console.log("Error occurred while processing");
         });
       }
       // Check if leaderboard
@@ -53,7 +53,7 @@ headhunter.loadGame(process.env).then((setup) => {
         console.log("Message matched leaderboard command check")
         let eventMessage = new EventMessage(message.channelId, message.author.id, undefined, cleanMessage);
         headhunter.leaderboard(eventMessage).then((state) => {
-          if(state) console.log("Message processed by leaderboard");
+          (state) ? console.log("Message successfully processed by game") : console.log("Error occurred while processing");
         });
       }
       // Check if repopulating the images

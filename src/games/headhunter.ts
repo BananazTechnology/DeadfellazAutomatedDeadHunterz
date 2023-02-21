@@ -49,6 +49,7 @@ export class Headhunter {
     this.config = new Config(parseInt(env.CONFIG_ID), env.DB_NAME, env.CONFIG_TABLE_NAME, this.db);
     await this.updateConfigAndInMemoryValues();
     // Startup the proper end/start scheduler
+    console.log(`Game is currently running: ${this.config.isGameRunning()}`);
     (this.config.isGameRunning()) ? 
       new GameEnd(this.discordUtils, this.config) : 
         new GameStart(this.discordUtils, this.config);

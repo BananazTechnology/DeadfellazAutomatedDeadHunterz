@@ -19,6 +19,10 @@ export class GameStart {
     let nextRun = new Date(this.config.getStartTime() * 1000);
     let now = new Date();
     let nextRunDefault = new Date(now.getTime() + (15 * 1000) - 18000000);
+    console.log('nextRun: ' + nextRun);
+    console.log('now: ' + now);
+    console.log('nextRunDefault: ' + nextRunDefault);
+    
     this.cronJob = new CronJob(
       ((nextRun < now) ? nextRunDefault : nextRun), 
       this.send, 

@@ -40,7 +40,7 @@ export class GameEnd {
       new EventMessage(
         this.config.getGameChannelId(),
         undefined,
-        `@everyone Thank you for playing!`,
+        `@ future role here Thank you for playing!`,
         undefined,);
     this.discUtils.sendEventMessage(evntMsg);
     // Start new GameStart listener

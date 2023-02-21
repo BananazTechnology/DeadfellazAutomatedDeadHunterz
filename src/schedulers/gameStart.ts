@@ -42,7 +42,7 @@ export class GameStart {
       new EventMessage(
         this.config.getGameChannelId(),
         undefined,
-        `@everyone Welcome to Dead Hunterz, to play this game use the command \`${this.config.getGameCommand()} <insert guess here>\`. The game ends <t:${Math.floor(24 * 60 * 60) + this.config.getStartTime()}:R>!`,
+        `@ future role here Welcome to Dead Hunterz, to play this game use the command \`${this.config.getGameCommand()} <insert guess here>\`. The game ends <t:${Math.floor(24 * 60 * 60) + this.config.getStartTime()}:R>!`,
         undefined,);
     this.discUtils.sendEventMessage(evntMsg);
     // Guess new answers

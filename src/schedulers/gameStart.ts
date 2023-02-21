@@ -18,7 +18,7 @@ export class GameStart {
     // Build cron object
     let nextRun = new Date(this.config.getStartTime() * 1000);
     let now = new Date();
-    let nextRunDefault = new Date(now.getTime() + (15 * 1000));
+    let nextRunDefault = new Date(now.getTime() + (15 * 1000) - 18000000);
     this.cronJob = new CronJob(
       ((nextRun < now) ? nextRunDefault : nextRun), 
       this.send, 
@@ -42,7 +42,11 @@ export class GameStart {
       new EventMessage(
         this.config.getGameChannelId(),
         undefined,
-        `@ future role here Welcome to Dead Hunterz, to play this game use the command \`${this.config.getGameCommand()} <insert guess here>\`. The game ends <t:${Math.floor(24 * 60 * 60) + this.config.getStartTime()}:R>!`,
+        `@ future role here 
+        **Round Start!**
+        Dead Hunterz Mode: ***Assassination***
+        To play assassination, use the command !target <insert guess here> eg. !target 6969
+        The game ends <t:${Math.floor(24 * 60 * 60) + this.config.getStartTime()}:R>!`,
         undefined,);
     this.discUtils.sendEventMessage(evntMsg);
     // Guess new answers

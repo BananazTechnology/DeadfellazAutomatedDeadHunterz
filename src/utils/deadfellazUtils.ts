@@ -12,17 +12,29 @@ export class DeadfellazUtils {
     private static FRENZ_MAX : number = 13000;
 
     public static async getDeadfellazImageURL(tokenId : number) : Promise<string> {
-        let response = await axios.get(`${this.DEADFELLAZ_METADATA_URL}/${tokenId}`);
-        let imageURL = (response.data.image) ? response.data.image : "";
-        let imageURLRewrite = await this.rewriteIPFSURL(imageURL);
-        return imageURLRewrite;
+        return new Promise(async (resolve, reject) => {
+            try {
+                let response = await axios.get(`${this.DEADFELLAZ_METADATA_URL}/${tokenId}`);
+                let imageURL = (response.data.image) ? response.data.image : "";
+                let imageURLRewrite = await this.rewriteIPFSURL(imageURL);
+                resolve(imageURLRewrite);
+            } catch(error) {
+                reject(error);
+            }
+        })
     }
 
     public static async getFrenzImageURL(tokenId : number) : Promise<string> {
-        let response = await axios.get(`${this.FRENZ_METADATA_URL}/${tokenId}.json`);
-        let imageURL = (response.data.image) ? response.data.image : "";
-        let imageURLRewrite = await this.rewriteIPFSURL(imageURL);
-        return imageURLRewrite;
+        return new Promise(async (resolve, reject) => {
+            try {
+                let response = await axios.get(`${this.FRENZ_METADATA_URL}/${tokenId}.json`);
+                let imageURL = (response.data.image) ? response.data.image : "";
+                let imageURLRewrite = await this.rewriteIPFSURL(imageURL);
+                resolve(imageURLRewrite);
+            } catch(error) {
+                reject(error);
+            }
+        })
     }
 
     public static async rewriteIPFSURL(url : string) : Promise<string> {
@@ -51,16 +63,23 @@ export class DeadfellazUtils {
     }
 
     public static async getImageURLFromProjectIdAndTokenId(project : number, tokenId : number) : Promise<string> {
-        let imageURL = "";
-        switch(project) {
-            case 1:
-                imageURL = await this.getDeadfellazImageURL(tokenId);
-                break;
-            case 2:
-                imageURL = await this.getFrenzImageURL(tokenId);
-                break;
-        }
-        console.log(`Image URL: ${imageURL}`)
-        return imageURL;
+        return new Promise(async (resolve, reject) => { 
+            try {
+                let imageURL = "";
+                switch(project) {
+                    case 1:
+                        imageURL = await this.getDeadfellazImageURL(tokenId);
+                        break;
+                    case 2:
+                        imageURL = await this.getFrenzImageURL(tokenId);
+                        break;
+                }
+                console.log(`Image URL: ${imageURL}`)
+                resolve(imageURL);
+            } catch(error) {
+                console.log(error);
+                reject(error);
+            }
+        });
     }
 }

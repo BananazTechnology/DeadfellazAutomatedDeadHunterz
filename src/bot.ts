@@ -27,7 +27,7 @@ headhunter.loadGame(process.env).then((setup) => {
   let gameCommand = headhunter.getGameCommand();
   console.log("Listening for messages in game channel " + gameChannelId + " with command " + gameCommand)
 
-  client.on('messageCreate', message => {
+  client.on('messageCreate', async message => {
     if (message == null) return
     if (message.author.id === client.user?.id) return
     if (message.channelId === gameChannelId) {
@@ -73,7 +73,7 @@ headhunter.loadGame(process.env).then((setup) => {
             // discordHints.push(newDiscordHintEmbed);
             // setup.getDiscordUtils().sendEmbeds(setup.getConfig().getGameChannelId(), discordHints);
 
-            DeadfellazUtils.getImageURLFromProjectIdAndTokenId(parseInt(projectIds[i]), parseInt(tokenIds[i])).then((imageURL) => {
+            await DeadfellazUtils.getImageURLFromProjectIdAndTokenId(parseInt(projectIds[i]), parseInt(tokenIds[i])).then((imageURL) => {
               let newDiscordHintEmbed = new MessageEmbed()
                 .setColor('#FFC800')
                 .setImage(imageURL)

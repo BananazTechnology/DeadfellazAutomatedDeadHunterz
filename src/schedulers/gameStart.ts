@@ -37,7 +37,9 @@ export class GameStart {
 
   private async send() {
     // Wait for start time to be before now and continue if so
-    let gameActive = (Math.floor(new Date().getTime() / 1000)) > this.config.getStartTime();
+    console.log('sending....')
+    let gameActive = (Math.floor(new Date().getTime() / 1000)) > (this.config.getStartTime()- 1000);
+    console.log('active?: ' + gameActive)
     if(!gameActive) return;
     //  Set game on
     this.config.setGameRunning(true);
@@ -46,11 +48,7 @@ export class GameStart {
       new EventMessage(
         this.config.getGameChannelId(),
         undefined,
-        `
-        **Round Start!**
-        Dead Hunterz Mode: ***Assassination***
-        To play assassination, use the command !target <insert guess here> eg. !target 6969
-        The game ends <t:${Math.floor(24 * 60 * 60) + this.config.getStartTime() + 180000}:R>!`,
+        `**Round Start!**\nDead Hunterz Mode: ***Assassination***\nTo play assassination, use the command !target <insert guess here> eg. !target 6969\nThe game ends <t:${Math.floor(24 * 60 * 60) + this.config.getStartTime() + 180000}:R>!`,
         undefined,);
     this.discUtils.sendEventMessage(evntMsg);
     // Guess new answers

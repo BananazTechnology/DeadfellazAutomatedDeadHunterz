@@ -27,7 +27,7 @@ export class DeadfellazUtils {
     public static async getFrenzImageURL(tokenId : number) : Promise<string> {
         return new Promise(async (resolve, reject) => {
             try {
-                let response = await axios.get(`${this.FRENZ_METADATA_URL}/${tokenId}.json`);
+                let response = await axios.get(`${this.FRENZ_METADATA_URL}/${tokenId}`);
                 let imageURL = (response.data.image) ? response.data.image : "";
                 let imageURLRewrite = await this.rewriteIPFSURL(imageURL);
                 resolve(imageURLRewrite);

@@ -46,11 +46,11 @@ export class GameStart {
       new EventMessage(
         this.config.getGameChannelId(),
         undefined,
-        `@ future role here 
+        `
         **Round Start!**
         Dead Hunterz Mode: ***Assassination***
         To play assassination, use the command !target <insert guess here> eg. !target 6969
-        The game ends <t:${Math.floor(24 * 60 * 60) + this.config.getStartTime()}:R>!`,
+        The game ends <t:${Math.floor(24 * 60 * 60) + this.config.getStartTime() + 180000}:R>!`,
         undefined,);
     this.discUtils.sendEventMessage(evntMsg);
     // Guess new answers

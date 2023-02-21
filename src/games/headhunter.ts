@@ -149,7 +149,7 @@ export class Headhunter {
         entry.setWinner(true);
         // player has a proper guess
         // TODO: generate proper win message
-        eventMessage.setOutboundMessage(`<@${eventMessage.getUser()}> You win!`);
+        eventMessage.setOutboundMessage(`<@${eventMessage.getUser()}> Correct! Your wallet has been recorded and entered into a raffle. Good luck! `);
       } else {
         eventMessage.setOutboundMessage(`<@${eventMessage.getUser()}> That answer has been guessed already!`);
       }

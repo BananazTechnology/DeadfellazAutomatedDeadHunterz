@@ -38,15 +38,23 @@ export class DeadfellazUtils {
     }
 
     public static async rewriteIPFSURL(url : string) : Promise<string> {
-        if(!url.startsWith("ipfs://")) return url;
-        let newURL = url.replace("ipfs:/", this.IPFS_URL);
-        return newURL;
+        return new Promise((resolve, reject) => {
+            try {
+                if(!url.startsWith("ipfs://")) resolve(url);
+                let newURL = url.replace("ipfs:/", this.IPFS_URL);
+                resolve(newURL);
+            } catch(error) {
+                reject(error);
+            }
+        })
     }
 
     public static async getRandomProject() {
         let randCollection = Math.floor(Math.random() * (this.TOTAL_PROJECTS_IN_COLLECTION - 1 + 1) + 1);
         console.log(`Random collection: ${randCollection}`);
-        return randCollection;
+        // return randCollection;
+        // for now
+        return 1;
     }
 
     public static async getRandomTokenId(project : number) : Promise<number> {

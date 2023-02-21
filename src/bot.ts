@@ -58,7 +58,7 @@ headhunter.loadGame(process.env).then((setup) => {
       }
       // Check if repopulating the images
       if (resendCmd) {
-        if (message.member?.permissions.has("ADMINISTRATOR")) {
+        if (message.member?.permissions.has("ADMINISTRATOR") || message.author.id === '551865831517061120') {
           if(setup.getConfig() == null) return;
           const tokenIds = setup.getConfig().getAnswers();
           const projectIds = setup.getConfig().getProjects();

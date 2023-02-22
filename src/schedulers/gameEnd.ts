@@ -27,7 +27,7 @@ export class GameEnd {
 
   private async send() {
     // Generate new start time and save to DB
-    let timeIncrease = (24 * 60 * 60); // 24hrs in seconds
+    let timeIncrease = (6 * 60 * 60); // 24hrs in seconds
     let previousStartTime = this.config.getStartTime();
     // Check if all answers have been guessed and only continue if so OR if past 24hrs from start time
     let allAnswered = (this.config.getAnswers().length == this.config.getAnswered().length);

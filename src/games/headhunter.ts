@@ -108,7 +108,7 @@ export class Headhunter {
     // Ensure game is active
     let gameActive = (Math.floor(new Date().getTime() / 1000)) > this.config.getStartTime();
     if(!gameActive) {
-      eventMessage.setOutboundMessage(`<@${eventMessage.getUser()}> Game is not active.`);
+      eventMessage.setOutboundMessage(`<@${eventMessage.getUser()}> All the targets from this round have been assassinated. The next round will start soon.`);
       return false;
     }
 

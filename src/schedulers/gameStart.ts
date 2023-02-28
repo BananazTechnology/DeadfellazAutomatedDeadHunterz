@@ -52,20 +52,19 @@ export class GameStart {
         undefined,);
     this.discUtils.sendEventMessage(evntMsg);
     // Guess new answers
-    let discordHints : MessageEmbed[] = [];
     let newAnswers : string[] = [];
     let newProjects : string[] = [];
+    let newDiscordHintEmbed : MessageEmbed[] = [];
     for(let i = 0; i < this.config.getAnswersToGenerate(); i++) {
       let getNewProjectId = await DeadfellazUtils.getRandomProject();
       let getNewTokenId = await DeadfellazUtils.getRandomTokenId(getNewProjectId);
       newAnswers.push(getNewTokenId.toString());
       newProjects.push(getNewProjectId.toString());
       let newHintImage = await DeadfellazUtils.getImageURLFromProjectIdAndTokenId(getNewProjectId, getNewTokenId)
-      let newDiscordHintEmbed = new MessageEmbed()
+      newDiscordHintEmbed[i] = new MessageEmbed()
         .setColor('#FFC800')
         .setImage(newHintImage)
         .setTimestamp();
-      discordHints.push(newDiscordHintEmbed);
     }
     this.config.setAnswered([]);
     this.config.setAnswers(newAnswers);
@@ -74,7 +73,7 @@ export class GameStart {
     let newUuid : string = uuidv4();
     this.config.setGameUuid(newUuid);
     // Write hints to Discord to indicate the game started
-    this.discUtils.sendEmbeds(this.config.getGameChannelId(), discordHints);
+    await this.discUtils.sendEmbeds(this.config.getGameChannelId(), newDiscordHintEmbed);
     //  Start new GameEnd listener
     new GameEnd(this.discUtils, this.config);
     // Stop this.cronJob

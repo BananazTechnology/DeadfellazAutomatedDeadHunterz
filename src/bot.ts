@@ -62,6 +62,7 @@ headhunter.loadGame(process.env).then((setup) => {
           if(setup.getConfig() == null) return;
           const tokenIds = setup.getConfig().getAnswers();
           const projectIds = setup.getConfig().getProjects();
+          let embeds : MessageEmbed[] = [];
           for(let i = 0; i < setup.getConfig().getAnswersToGenerate(); i++) {
 
             // let discordHints : MessageEmbed[] = [];
@@ -74,13 +75,13 @@ headhunter.loadGame(process.env).then((setup) => {
             // setup.getDiscordUtils().sendEmbeds(setup.getConfig().getGameChannelId(), discordHints);
 
             await DeadfellazUtils.getImageURLFromProjectIdAndTokenId(parseInt(projectIds[i]), parseInt(tokenIds[i])).then((imageURL) => {
-              let newDiscordHintEmbed = new MessageEmbed()
+              embeds[i] = new MessageEmbed()
                 .setColor('#FFC800')
                 .setImage(imageURL)
                 .setTimestamp();
-              setup.getDiscordUtils().sendEmbeds(setup.getConfig().getGameChannelId(), [newDiscordHintEmbed]);
             });
           }
+          await setup.getDiscordUtils().sendEmbeds(setup.getConfig().getGameChannelId(), embeds);
         }
       }
     }

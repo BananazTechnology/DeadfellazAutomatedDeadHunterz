@@ -40,7 +40,7 @@ export class GameEnd {
       new EventMessage(
         this.config.getGameChannelId(),
         undefined,
-        `@ future role here Thank you for playing!`,
+        `@ futurerolehere, psych plz make this ty. All targets for this round have been assassinated. Thank you for playing! A new round will begin soon`,
         undefined,);
     this.discUtils.sendEventMessage(evntMsg);
     // Start new GameStart listener

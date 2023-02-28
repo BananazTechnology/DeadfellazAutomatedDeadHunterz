@@ -23,6 +23,6 @@ export class DiscordUtils {
     let MessageOptions = {
       embeds: embeds
     }
-    channel.send(MessageOptions);
+    await channel.send(MessageOptions);
   }
 }

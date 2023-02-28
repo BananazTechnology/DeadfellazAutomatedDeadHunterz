@@ -51,7 +51,7 @@ export class DeadfellazUtils {
     public static async rewrtePinataURL(url : string) : Promise<string> {
         return new Promise((resolve, reject) => {
             try {
-                if(!url.startsWith("ipfs://")) resolve(url);
+                if(url.startsWith("ipfs://")) resolve(url);
                 let newURL = url.replace("https://gateway.pinata.cloud/ipfs", this.IPFS_URL);
                 resolve(newURL);
             } catch(error) {

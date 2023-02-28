@@ -40,7 +40,6 @@ export class DeadfellazUtils {
     public static async rewriteIPFSURL(url : string) : Promise<string> {
         return new Promise((resolve, reject) => {
             try {
-                if(!url.startsWith("ipfs://")) resolve(url);
                 let newURL = url.replace("ipfs:/", this.IPFS_URL);
                 resolve(newURL);
             } catch(error) {

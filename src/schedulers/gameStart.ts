@@ -61,10 +61,11 @@ export class GameStart {
       newAnswers.push(getNewTokenId.toString());
       newProjects.push(getNewProjectId.toString());
       let newHintImage = await DeadfellazUtils.getImageURLFromProjectIdAndTokenId(getNewProjectId, getNewTokenId)
-      newDiscordHintEmbed[i] = new MessageEmbed()
+      let embed = new MessageEmbed()
         .setColor('#FFC800')
         .setImage(newHintImage)
         .setTimestamp();
+      newDiscordHintEmbed.push(embed);
     }
     this.config.setAnswered([]);
     this.config.setAnswers(newAnswers);
